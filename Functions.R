@@ -1,210 +1,757 @@
+# ---------------------------------------------------------------------------- #
+data_sampler <- function(data,
+                         data_fraction = 0.5,
+                         set_seed = TRUE,
+                         seed_value = 42){
+  
+  if(set_seed == TRUE){set.seed(seed = seed_value)}
+  data <- dplyr::as_tibble(data) %>% 
+    dplyr::sample_frac(size = data_fraction) 
+  
+  return(data)
+}
+# Use case:
+# data_sampler(data = diamonds,
+#              data_fraction = 0.1,
+#              set_seed = TRUE,
+#              seed_value = 1) %>%
+#   count(cut)
 
-actual <- round(runif(n = 100, min = 0, max = 1))
-predicted <- runif(n = 100, min = 0, max = 1)
-cutoff = 0.5
-FN_cost = 1
-FP_cost = 1
-TN_cost = 0
-TP_cost = 0
-type_info <- "train"
+# ---------------------------------------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
+factor_count_histogram_plot <- function(data,
+                                        factor_var,
+                                        title = "",
+                                        caption = "",
+                                        factor_axis = "",
+                                        count_axis = "",
+                                        expansion_multiplier = 0.05,
+                                        label_padding = 0.25,
+                                        label_size = 4,
+                                        title_size = 10,
+                                        title_horizontal_position = 0.5,
+                                        title_vertical_position = 0.5,
+                                        text_size = 4){
+  
+  # -------------------------------------------------------------------------- #
+  # data = diamonds
+  # factor_var = "cut"
+  # title = ""
+  # caption = ""
+  # factor_axis = ""
+  # count_axis = ""
+  # expansion_multiplier = 0.1
+  # label_padding = 0.25
+  # label_size = 4
+  # title_size = 10
+  # title_horizontal_position = 0.5
+  # title_vertical_position = 0.5
+  # text_size = 4
+  # -------------------------------------------------------------------------- #
+  
+  # Variables:
+  factor_var <- rlang::sym(factor_var)
+  factor_var <- dplyr::enquo(factor_var)                    
+  factor_var_name <- dplyr::quo_name(factor_var)
+  
+  # Names:
+  if(count_axis == ""){count_axis <- "COUNT"}
+  if(factor_axis == ""){factor_axis <- stringr::str_to_upper(factor_var_name)}
+  if(title == ""){title <- "QUANTITY BAR PLOT"}
+  if(caption == ""){caption <- "SOURCE: UNKNOWN"}
+  
+  # Data summary:
+  data_summary <- data %>%
+    dplyr::select(!!factor_var) %>%
+    dplyr::group_by(!!factor_var) %>%
+    dplyr::summarise(count = dplyr::n(),
+                     .groups = "drop") %>%
+    dplyr::mutate(mean_count = sum(count)/nrow(.))
+  
+  # Plot:
+  plot <- data_summary %>%
+    ggplot2::ggplot(data = .,
+                    mapping = ggplot2::aes(x = !!factor_var,
+                                           y = count, 
+                                           fill = !!factor_var, 
+                                           label = count)) +
+    ggplot2::geom_hline(yintercept = data_summary$mean_count) +
+    ggplot2::geom_bar(stat = "identity",
+                      position = "identity",
+                      color = "black") +
+    ggplot2::labs(x = factor_axis,
+                  y = count_axis,
+                  caption = caption,
+                  title = title) +
+    ggplot2::geom_label(color = "black", 
+                        fill = "white",
+                        fontface = 1,
+                        size = label_size, 
+                        label.padding = ggplot2::unit(label_padding, "lines"),
+                        label.r = ggplot2::unit(0, "lines")) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = expansion_multiplier)) +
+    ggplot2::theme(legend.position = "none",
+                   plot.title = ggplot2::element_text(size = title_size, color = "black", face = "bold", hjust = title_horizontal_position, vjust = title_vertical_position),
+                   axis.text.x = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.x = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   axis.text.y = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.y = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   panel.grid.major.x = ggplot2::element_line(color = "black", linetype = "dotted"),
+                   panel.grid.minor.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.major.y = ggplot2::element_line(color = "black", linetype = "dotted"),
+                   panel.grid.minor.y = ggplot2::element_line(linetype = "blank"),
+                   axis.ticks = ggplot2::element_line(size = 1, color = "black", linetype = "dotted"),
+                   axis.ticks.length = ggplot2::unit(0.1, "cm"),
+                   plot.background = ggplot2::element_rect(fill = "gray80", color = "black", linetype = "solid", size = 1.5),
+                   panel.background = ggplot2::element_rect(fill = "gray90", color = "black", linetype = "solid"),
+                   plot.caption = ggplot2::element_text(size = text_size, color = "black", face = "bold", hjust = 1)) +
+    ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(nrow(data_summary), "Greys"))
+  
+  return(plot)
+}
+
+# Use case:
+# factor_count_histogram_plot(data = diamonds,
+#                             factor_var = "color",
+#                             factor_axis = "")
+# ---------------------------------------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
+select_box_input <- function(vector){
+  
+  vector <- sort(unique(vector))
+  return_ <- list()
+  for(i in seq_along(vector)){
+    return_[[i]] <- vector[i]
+    names(return_)[i] <- vector[i]}
+  
+  return(return_)
+}
+# Use case:
+# select_box_input(vector <- c("A", "B", "C"))
+# ---------------------------------------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
+factor_percentage_histogram_plot <- function(data,
+                                             factor_var,
+                                             title = "",
+                                             caption = "",
+                                             factor_axis = "",
+                                             percentage_axis = "",
+                                             expansion_multiplier = 0.05,
+                                             label_padding = 0.25,
+                                             label_size = 4,
+                                             title_size = 10,
+                                             title_horizontal_position = 0.5,
+                                             title_vertical_position = 0.5,
+                                             text_size = 4,
+                                             percentage_breaks = 11){
+  
+  # -------------------------------------------------------------------------- #
+  # data = diamonds
+  # factor_var = "cut"
+  # title = ""
+  # caption = ""
+  # factor_axis = ""
+  # percentage_axis = ""
+  # expansion_multiplier = 0.1
+  # label_padding = 0.25
+  # label_size = 4
+  # title_size = 10
+  # title_horizontal_position = 0.5
+  # title_vertical_position = 0.5
+  # text_size = 4
+  # percentage_breaks = 11
+  # -------------------------------------------------------------------------- #
+  
+  # Variables:
+  factor_var <- rlang::sym(factor_var)
+  factor_var <- dplyr::enquo(factor_var)                    
+  factor_var_name <- dplyr::quo_name(factor_var)
+  
+  # Names:
+  if(percentage_axis == ""){percentage_axis <- "PERCENTAGE"}
+  if(factor_axis == ""){factor_axis <- stringr::str_to_upper(factor_var_name)}
+  if(title == ""){title <- "PERCENTAGE BAR PLOT"}
+  if(caption == ""){caption <- "SOURCE: UNKNOWN"}
+  
+  # Data summary:
+  data_summary <- data %>%
+    dplyr::select(!!factor_var) %>%
+    dplyr::group_by(!!factor_var) %>%
+    dplyr::summarise(percentage = dplyr::n()/nrow(.),
+                     .groups = "drop") %>%
+    dplyr::mutate(mean_percentage = 1/nrow(.))
+  
+  # Plot:
+  plot <- data_summary %>%
+    ggplot2::ggplot(data = .,
+                    mapping = ggplot2::aes(x = !!factor_var,
+                                           y = percentage, 
+                                           fill = !!factor_var, 
+                                           label = paste0(round(100 * percentage, 1), "%"))) +
+    ggplot2::geom_hline(yintercept = data_summary$mean_percentage) +
+    ggplot2::geom_bar(stat = "identity",
+                      position = "identity",
+                      color = "black") +
+    ggplot2::labs(x = factor_axis,
+                  y = percentage_axis,
+                  caption = caption,
+                  title = title) +
+    ggplot2::geom_label(color = "black", 
+                        fill = "white",
+                        fontface = 1,
+                        size = label_size, 
+                        label.padding = ggplot2::unit(label_padding, "lines"),
+                        label.r = ggplot2::unit(0, "lines")) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = expansion_multiplier),
+                                labels = scales::percent_format(accuracy = 1), 
+                                breaks = base::seq(from = 0, to = 1, length.out = percentage_breaks)) +
+    ggplot2::theme(legend.position = "none",
+                   plot.title = ggplot2::element_text(size = title_size, color = "black", face = "bold", hjust = title_horizontal_position, vjust = title_vertical_position),
+                   axis.text.x = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.x = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   axis.text.y = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.y = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   panel.grid.major.x = ggplot2::element_line(color = "black", linetype = "dotted"),
+                   panel.grid.minor.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.major.y = ggplot2::element_line(color = "black", linetype = "dotted"),
+                   panel.grid.minor.y = ggplot2::element_line(linetype = "blank"),
+                   axis.ticks = ggplot2::element_line(size = 1, color = "black", linetype = "dotted"),
+                   axis.ticks.length = ggplot2::unit(0.1, "cm"),
+                   plot.background = ggplot2::element_rect(fill = "gray80", color = "black", linetype = "solid", size = 1.5),
+                   panel.background = ggplot2::element_rect(fill = "gray90", color = "black", linetype = "solid"),
+                   plot.caption = ggplot2::element_text(size = text_size, color = "black", face = "bold", hjust = 1)) +
+    ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(nrow(data_summary), "Greys"))
+  
+  return(plot)
+}
+
+# Use case:
+# factor_percentage_histogram_plot(data = diamonds,
+#                                  factor_var = "color")
+# ---------------------------------------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
+factor_vs_factor_count_plot <- function(data,
+                                        factor_var_1,
+                                        factor_var_2,
+                                        factor_axis_1 = "",
+                                        factor_axis_2 = "",
+                                        title = "",
+                                        caption = "",
+                                        label_padding = 0.25,
+                                        label_size = 4,
+                                        title_size = 10,
+                                        title_horizontal_position = 0.5,
+                                        title_vertical_position = 0.5,
+                                        text_size = 4){
+  
+  # Variables:
+  factor_var_1 <- rlang::sym(factor_var_1)
+  factor_var_2 <- rlang::sym(factor_var_2)
+  factor_var_1 <- dplyr::enquo(factor_var_1)
+  factor_var_2  <- dplyr::enquo(factor_var_2)
+  factor_var_1_name <- dplyr::quo_name(factor_var_1)
+  factor_var_2_name <- dplyr::quo_name(factor_var_2)
+  
+  # Names:
+  if(factor_axis_1 == ""){factor_axis_1 <- stringr::str_to_upper(factor_var_1_name)}
+  if(factor_axis_2 == ""){factor_axis_2 <- stringr::str_to_upper(factor_var_2_name)}
+  if(title == ""){title <- "QUANTITY TILE PLOT"}
+  if(caption == ""){caption <- "SOURCE: UNKNOWN"}
+  
+  # Summary:
+  data_summary <- data %>%
+    dplyr::group_by(!!factor_var_1, !!factor_var_2) %>%
+    dplyr::count() %>%
+    dplyr::ungroup() %>%
+    tidyr::complete(!!factor_var_1, !!factor_var_2, fill = list(n = 0))
+  
+  # Plot:
+  plot <- data_summary %>%
+    ggplot2::ggplot(data = .,
+                    mapping = ggplot2::aes(x = !!factor_var_1,
+                                           y = !!factor_var_2,
+                                           fill = n,
+                                           label = n)) +
+    ggplot2::geom_tile(color = "black") +
+    ggplot2::geom_label(color = "black", 
+                        fill = "white",
+                        fontface = 1,
+                        size = label_size, 
+                        label.padding = ggplot2::unit(label_padding, "lines"),
+                        label.r = ggplot2::unit(0, "lines")) +
+    ggplot2::scale_fill_gradientn(colours = c("white", "black"), values = c(0, 1)) +
+    ggplot2::labs(x = factor_axis_1,
+                  y = factor_axis_2,
+                  caption = caption,
+                  title = title) +
+    ggplot2::theme(legend.position = "none",
+                   plot.title = ggplot2::element_text(size = title_size, color = "black", face = "bold", hjust = title_horizontal_position, vjust = title_vertical_position),
+                   axis.text.x = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.x = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   axis.text.y = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.y = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   panel.grid.major.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.minor.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.major.y = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.minor.y = ggplot2::element_line(linetype = "blank"),
+                   axis.ticks = ggplot2::element_line(size = 1, color = "black", linetype = "dotted"),
+                   axis.ticks.length = ggplot2::unit(0.1, "cm"),
+                   plot.background = ggplot2::element_rect(fill = "gray80", color = "black", linetype = "solid", size = 1.5),
+                   panel.background = ggplot2::element_rect(fill = "gray90", color = "black", linetype = "solid"),
+                   plot.caption = ggplot2::element_text(size = text_size, color = "black", face = "bold", hjust = 1))
+  
+  return(plot)
+}
+
+# Use case:
+# factor_vs_factor_count_plot(data = diamonds,
+#                             factor_var_1 = "cut",
+#                             factor_var_2 = "color")
+# ---------------------------------------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
+factor_vs_factor_percentage_plot <- function(data,
+                                             factor_var_1,
+                                             factor_var_2,
+                                             factor_axis_1 = "",
+                                             factor_axis_2 = "",
+                                             title = "",
+                                             caption = "",
+                                             label_padding = 0.25,
+                                             label_size = 4,
+                                             title_size = 10,
+                                             title_horizontal_position = 0.5,
+                                             title_vertical_position = 0.5,
+                                             text_size = 4){
+  
+  # Variables:
+  factor_var_1 <- rlang::sym(factor_var_1)
+  factor_var_2 <- rlang::sym(factor_var_2)
+  factor_var_1 <- dplyr::enquo(factor_var_1)
+  factor_var_2  <- dplyr::enquo(factor_var_2)
+  factor_var_1_name <- dplyr::quo_name(factor_var_1)
+  factor_var_2_name <- dplyr::quo_name(factor_var_2)
+  
+  # Names:
+  if(factor_axis_1 == ""){factor_axis_1 <- stringr::str_to_upper(factor_var_1_name)}
+  if(factor_axis_2 == ""){factor_axis_2 <- stringr::str_to_upper(factor_var_2_name)}
+  if(title == ""){title <- "PERCENTAGE TILE PLOT"}
+  if(caption == ""){caption <- "SOURCE: UNKNOWN"}
+  
+  # Summary:
+  data_summary <- data %>%
+    dplyr::group_by(!!factor_var_1, !!factor_var_2) %>%
+    dplyr::count() %>%
+    dplyr::ungroup() %>%
+    tidyr::complete(!!factor_var_1, !!factor_var_2, fill = list(n = 0)) %>%
+    dplyr::mutate(percentage = 100 * n/sum(n))
+  
+  # Plot:
+  plot <- data_summary %>%
+    ggplot2::ggplot(data = .,
+                    mapping = ggplot2::aes(x = !!factor_var_1,
+                                           y = !!factor_var_2,
+                                           fill = percentage,
+                                           label = paste0(round(percentage, 1), "%"))) +
+    ggplot2::geom_tile(color = "black") +
+    ggplot2::geom_label(color = "black", 
+                        fill = "white",
+                        fontface = 1,
+                        size = label_size, 
+                        label.padding = ggplot2::unit(label_padding, "lines"),
+                        label.r = ggplot2::unit(0, "lines")) +
+    ggplot2::scale_fill_gradientn(colours = c("white", "black"), values = c(0, 1)) +
+    ggplot2::labs(x = factor_axis_1,
+                  y = factor_axis_2,
+                  caption = caption,
+                  title = title) +
+    ggplot2::theme(legend.position = "none",
+                   plot.title = ggplot2::element_text(size = title_size, color = "black", face = "bold", hjust = title_horizontal_position, vjust = title_vertical_position),
+                   axis.text.x = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.x = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   axis.text.y = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.y = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   panel.grid.major.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.minor.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.major.y = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.minor.y = ggplot2::element_line(linetype = "blank"),
+                   axis.ticks = ggplot2::element_line(size = 1, color = "black", linetype = "dotted"),
+                   axis.ticks.length = ggplot2::unit(0.1, "cm"),
+                   plot.background = ggplot2::element_rect(fill = "gray80", color = "black", linetype = "solid", size = 1.5),
+                   panel.background = ggplot2::element_rect(fill = "gray90", color = "black", linetype = "solid"),
+                   plot.caption = ggplot2::element_text(size = text_size, color = "black", face = "bold", hjust = 1))
+  
+  return(plot)
+}
+
+# Use case:
+# factor_vs_factor_percentage_plot(data = diamonds,
+#                                  factor_var_1 = "cut",
+#                                  factor_var_2 = "color")
+# ---------------------------------------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
+factor_vs_factor_percentage_group_tile_plot <- function(data,
+                                                        factor_var_1,
+                                                        factor_var_2,
+                                                        factor_axis_1 = "",
+                                                        factor_axis_2 = "",
+                                                        title = "",
+                                                        caption = "",
+                                                        label_padding = 0.25,
+                                                        label_size = 4,
+                                                        title_size = 10,
+                                                        title_horizontal_position = 0.5,
+                                                        title_vertical_position = 0.5,
+                                                        text_size = 4){
+  
+  # Variables:
+  factor_var_1 <- rlang::sym(factor_var_1)
+  factor_var_2 <- rlang::sym(factor_var_2)
+  factor_var_1 <- dplyr::enquo(factor_var_1)
+  factor_var_2  <- dplyr::enquo(factor_var_2)
+  factor_var_1_name <- dplyr::quo_name(factor_var_1)
+  factor_var_2_name <- dplyr::quo_name(factor_var_2)
+  
+  # Names:
+  if(factor_axis_1 == ""){factor_axis_1 <- stringr::str_to_upper(factor_var_1_name)}
+  if(factor_axis_2 == ""){factor_axis_2 <- stringr::str_to_upper(factor_var_2_name)}
+  if(title == ""){title <- "GROUP PERCENTAGE TILE PLOT"}
+  if(caption == ""){caption <- "SOURCE: UNKNOWN"}
+  
+  # Summary:
+  data_summary <- data %>%
+    dplyr::group_by(!!factor_var_1, !!factor_var_2) %>%
+    dplyr::count() %>%
+    dplyr::ungroup() %>%
+    tidyr::complete(!!factor_var_1, !!factor_var_2, fill = list(n = 0)) %>%
+    dplyr::group_by(!!factor_var_1) %>%
+    dplyr::mutate(group_n = sum(n)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(scaled_percentage = 100 * n/group_n)
+  
+  # Plot:
+  plot <- data_summary %>%
+    ggplot2::ggplot(data = .,
+                    mapping = ggplot2::aes(x = !!factor_var_1,
+                                           y = !!factor_var_2,
+                                           fill = scaled_percentage,
+                                           label = paste0(round(scaled_percentage, 1), "%"))) +
+    ggplot2::geom_tile(color = "black") +
+    ggplot2::geom_label(color = "black", 
+                        fill = "white",
+                        fontface = 1,
+                        size = label_size, 
+                        label.padding = ggplot2::unit(label_padding, "lines"),
+                        label.r = ggplot2::unit(0, "lines")) +
+    ggplot2::scale_fill_gradientn(colours = c("white", "black"), values = c(0, 1)) +
+    ggplot2::labs(x = factor_axis_1,
+                  y = factor_axis_2,
+                  caption = caption,
+                  title = title) +
+    ggplot2::theme(legend.position = "none",
+                   plot.title = ggplot2::element_text(size = title_size, color = "black", face = "bold", hjust = title_horizontal_position, vjust = title_vertical_position),
+                   axis.text.x = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.x = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   axis.text.y = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.y = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   panel.grid.major.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.minor.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.major.y = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.minor.y = ggplot2::element_line(linetype = "blank"),
+                   axis.ticks = ggplot2::element_line(size = 1, color = "black", linetype = "dotted"),
+                   axis.ticks.length = ggplot2::unit(0.1, "cm"),
+                   plot.background = ggplot2::element_rect(fill = "gray80", color = "black", linetype = "solid", size = 1.5),
+                   panel.background = ggplot2::element_rect(fill = "gray90", color = "black", linetype = "solid"),
+                   plot.caption = ggplot2::element_text(size = text_size, color = "black", face = "bold", hjust = 1))
+  
+  return(plot)
+}
+
+# Use case:
+# factor_vs_factor_percentage_scaled_plot(data = diamonds,
+#                                         factor_var_1 = "color",
+#                                         factor_var_2 = "cut")
+# ---------------------------------------------------------------------------- #
 
 
-Binary_Classifier_Verification <- function(actual,
-                                           predicted,
-                                           type_info = "",
-                                           cutoff = 0.5,
-                                           FN_cost = 1,
-                                           FP_cost = 1,
-                                           TN_cost = 0,
-                                           TP_cost = 0,
-                                           save = FALSE,
-                                           open = TRUE){
+
+# ---------------------------------------------------------------------------- #
+factor_vs_factor_percentage_group_bar_plot <- function(data,
+                                                       factor_var_1,
+                                                       factor_var_2,
+                                                       factor_axis_1 = "",
+                                                       factor_axis_2 = "",
+                                                       title = "",
+                                                       caption = "",
+                                                       label_padding = 0.25,
+                                                       label_size = 4,
+                                                       title_size = 10,
+                                                       title_horizontal_position = 0.5,
+                                                       title_vertical_position = 0.5,
+                                                       text_size = 4,
+                                                       percentage_breaks = 11){
   
-  sys_time <- Sys.time()
+  # Variables:
+  factor_var_1 <- rlang::sym(factor_var_1)
+  factor_var_2 <- rlang::sym(factor_var_2)
+  factor_var_1 <- dplyr::enquo(factor_var_1)
+  factor_var_2  <- dplyr::enquo(factor_var_2)
+  factor_var_1_name <- dplyr::quo_name(factor_var_1)
+  factor_var_2_name <- dplyr::quo_name(factor_var_2)
   
-  # Confusion matrix explanation:
-  result_1 <- tibble::tibble("Confusion Matrix" = c("Actual Negative (0)", "Actual Positive (1)"),
-                             "Predicted Negative (0)" = c("True Negative (TN)", "False Negative (FN)"),
-                             "Predicted Positive (1)" = c("False Positive (FP)", "True Positive (TP)"))
+  # Names:
+  if(factor_axis_1 == ""){factor_axis_1 <- stringr::str_to_upper(factor_var_1_name)}
+  if(factor_axis_2 == ""){factor_axis_2 <- stringr::str_to_upper(factor_var_2_name)}
+  if(title == ""){title <- "GROUP PERCENTAGE BAR PLOT"}
+  if(caption == ""){caption <- "SOURCE: UNKNOWN"}
   
-  probability <- predicted
-  if(length(unique(predicted)) > 2){predicted <- ifelse(predicted < cutoff, 0, 1)}
-  predicted <- factor(predicted, levels = c(0, 1), labels = c(0, 1))
+  # Group levels:
+  factor_levels <- data %>%
+    dplyr::select(!!factor_var_2) %>%
+    dplyr::distinct() %>%
+    dplyr::pull() %>%
+    length(.)
   
-  # Confusion matrix result:
-  confusion_matrix <- table(actual, predicted)
-  result_2 <- tibble::tibble("Confusion Matrix" = c("Actual Negative (0)", "Actual Positive (1)"),
-                             "Predicted Negative (0)" = c(confusion_matrix[1, 1], confusion_matrix[2, 1]),
-                             "Predicted Positive (1)" = c(confusion_matrix[1, 2], confusion_matrix[2, 2])) 
+  # Plot:
+  plot <- data %>%
+    ggplot2::ggplot(data = .,
+                    mapping = aes(x = !!factor_var_1,
+                                  fill = !!factor_var_2)) +
+    ggplot2::geom_bar(position = "fill",
+                      color = "black") +
+    ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(factor_levels, "Greys")) +
+    ggplot2::labs(x = factor_axis_1,
+                  y = factor_axis_2,
+                  fill = factor_axis_2,
+                  caption = caption,
+                  title = title) +
+    ggplot2::theme(plot.title = ggplot2::element_text(size = title_size, color = "black", face = "bold", hjust = title_horizontal_position, vjust = title_vertical_position),
+                   axis.text.x = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.x = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   axis.text.y = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.y = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   panel.grid.major.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.minor.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.major.y = ggplot2::element_line(color = "black", linetype = "dotted"),
+                   panel.grid.minor.y = ggplot2::element_line(linetype = "blank"),
+                   axis.ticks = ggplot2::element_line(size = 1, color = "black", linetype = "dotted"),
+                   axis.ticks.length = ggplot2::unit(0.1, "cm"),
+                   plot.background = ggplot2::element_rect(fill = "gray80", color = "black", linetype = "solid", size = 1.5),
+                   panel.background = ggplot2::element_rect(fill = "gray90", color = "black", linetype = "solid"),
+                   plot.caption = ggplot2::element_text(size = text_size, color = "black", face = "bold", hjust = 1),
+                   legend.position = "right",
+                   legend.text = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   legend.title = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   legend.key = ggplot2::element_rect(colour = "gray90"),
+                   legend.box.background = ggplot2::element_rect(color = "black", linetype = "solid"),
+                   legend.background = ggplot2::element_rect(fill = "gray90", linetype = "solid", color = "black"),
+                   legend.box.spacing = ggplot2::unit(0.25, "cm")) +
+    ggplot2::scale_y_continuous(limits = base::c(0, 1), 
+                                labels = scales::percent_format(accuracy = 1), 
+                                breaks = base::seq(from = 0, to = 1, length.out = percentage_breaks))
   
-  # Assessment of classifier effectiveness:
-  OBS <- sum(confusion_matrix); OBS_label <- "= TN + FP + FN + TP"
-  TN <- confusion_matrix[1, 1]; TN_label <- "= TN"
-  FP <- confusion_matrix[1, 2]; FP_label <- "= FP"
-  FN <- confusion_matrix[2, 1]; FN_label <- "= FN"
-  TP <- confusion_matrix[2, 2]; TP_label <- "= TP"
-  P <- FN + TP; P_label <- "= FN + TP"
-  N <- TN + FP; N_label <- "= TN + FP"
-  
-  # Accuracy (ACC):
-  ACC <- (TN + TP)/(TN + FN + FP + TP)
-  ACC_label <- "= (TN + TP)/(TN + FN + FP + TP) = (TN + TP)/(P + N)"
-  
-  # Balanced Accuracy (BACC):
-  BACC <- (TN/(TN + FP) + TP/(FN + TP))/2
-  BACC_label <- "= (TN/(TN + FP) + TP/(FN + TP))/2"
-  
-  # Area Under Curve (AUC):
-  AUC <- Metrics::auc(actual = actual, predicted = probability)
-  AUC_label <- "= Area Under ROC Curve"
-  
-  # Bias:
-  BIAS <- mean(as.numeric(actual)) - mean(as.numeric(predicted))
-  BIAS_label <- "= mean(actual) - mean(predicted)"
-  
-  # Classification Error (CE):
-  CE <- (FN + FP)/(TN + FN + FP + TP)
-  CE_label <- "= (FN + FP)/(TN + FN + FP + TP) = 1 - (TN + TP)/(TN + FN + FP + TP)"
-  
-  # Recall, Sensitivity, hit rate, True Positive Rate (TPR):
-  TPR <- TP/(TP + FN)
-  TPR_label <- "= TP/(TP + FN) = TP/P = 1 - FNR"
-  
-  # Specifity, selectivity, True Negative Rate (TNR):
-  TNR <- TN/(TN + FP)
-  TNR_label <- "= TN/(TN + FP) = TN/N = 1 - FPR"
-  
-  # Precision, Positive Prediction Value (PPV):
-  PPV <- TP/(TP + FP)
-  PPV_label <- "= TP/(TP + FP) = 1 - FDR"
-  
-  # Negative Predictive Value (NPV):
-  NPV <- TN/(TN + FN)
-  NPV_label <- "= TN/(TN + FN) = 1 - FOR"
-  
-  # False Negative Rate (FNR), miss rate:
-  FNR <- FN/(FN + TP)
-  FNR_label <- "= FN/(FN + TP) = FN/P = 1 - TPR"
-  
-  # False Positive Rate (FPR), fall-out:
-  FPR <- FP/(FP + TN)
-  FPR_label <- "= FP/(FP + TN) = FP/N = 1 - TNR"
-  
-  # False Discovery Rate (FDR):
-  FDR <- FP/(FP + TP)
-  FDR_label <- "= FP/(FP + TP) = 1 - PPV"
-  
-  # False Omission Rate (FOR):
-  FOR <- FN/(FN + TN)
-  FOR_label <- "= FN/(FN + TN) = 1 - NPV"
-  
-  # Threat Score (TS), Critical Success Index (CSI):
-  TS <- TP/(TP + FN + FP)
-  TS_label <- "= TP/(TP + FN + FP)"
-  
-  # F1:
-  F1 <- (2 * PPV * TPR)/(PPV + TPR)
-  F1_label <- "= (2 * PPV * TPR)/(PPV + TPR) = 2 * TP/(2 * TP + FP + FN)"
-  
-  # Informedness, Bookmaker Informedness (BM):
-  BM <- TPR + TNR - 1
-  BM_label <- "= TPR + TNR - 1"
-  
-  # Markedness (MK):
-  MK <- PPV + NPV - 1
-  MK_label <- "= PPV + NPV - 1"
-  
-  # Gini Index:
-  GINI <- 2 * AUC - 1
-  GINI_label <- "= 2 * AUC - 1"
-  
-  # Cost:
-  COST <- FN * FN_cost + FP * FP_cost + TN * TN_cost + TP * TP_cost
-  COST_label <- "= FN * FN_cost + FP * FP_cost + TN * TN_cost + TP * TP_cost"
-  
-  result_3 <- tibble::tibble(Metric = c("Number of Observations", "True Negative", "False Positive", "False Negative", "True Positive",
-                                        "Condition Negative", "Condition Positive", "Accuracy", "Balanced Accuracy", "Area Under ROC Curve",
-                                        "Bias", "Classification Error", "True Positive Rate", "True Negative Rate",
-                                        "Positive Prediction Value", "Negative Predictive Value", "False Negative Rate", "False Positive Rate",
-                                        "False Discovery Rate", "False Omission Rate", "Threat Score", "F1 Score",
-                                        "Bookmaker Informedness", "Markedness", "Gini Index", "Cost"),
-                             `Metric Abbreviation` = c("RECORDS", "TN", "FP", "FN", "TP",
-                                                       "N", "P", "ACC", "BACC", "AUC",
-                                                       "BIAS", "CE", "TPR", "TNR", 
-                                                       "PPV", "NPV", "FNR", "FPR",
-                                                       "FDR", "FOR", "TS", "F1",
-                                                       "BM", "MK", "GINI", "COST"),
-                             `Metric Name` = c("-", "-", "Type I Error", "Type II Error", "-",
-                                               "-", "-", "-", "-", "-",
-                                               "-", "-", "Sensitivity, Recall, Hit Rate", "Specifity, Selectivity",
-                                               "Precision", "-", "Miss Rate", "Fall-Out",
-                                               "-", "-", "Critical Success Index", "-",
-                                               "-", "-", "-", "-"),
-                             Score = round(c(OBS, TN, FP, FN, TP,
-                                             N, P, ACC, BACC, AUC,
-                                             BIAS, CE, TPR, TNR,
-                                             PPV, NPV, FNR, FPR,
-                                             FDR, FOR, TS, F1,
-                                             BM, MK, GINI, COST), digits = 6),
-                             Calculation = c(OBS_label, TN_label, FP_label, FN_label, TP_label,
-                                             N_label, P_label, ACC_label, BACC_label, AUC_label,
-                                             BIAS_label, CE_label, TPR_label, TNR_label,
-                                             PPV_label, NPV_label, FNR_label, FPR_label,
-                                             FDR_label, FOR_label, TS_label, F1_label,
-                                             BM_label, MK_label, GINI_label, COST_label),
-                             ID = c(1:7, 1:19)) %>%
-    dplyr::select(ID, Metric, `Metric Abbreviation`, `Metric Name`, Score, Calculation)
-  
-  gt_table <- result_3 %>%
-    dplyr::mutate(Group = ifelse(Metric %in% c("Number of Observations", "True Negative",
-                                               "False Positive", "False Negative",
-                                               "True Positive", "Condition Positive",
-                                               "Condition Negative"), 
-                                 "Confusion Matrix Result", "Assessment of Classifier Effectiveness")) %>%
-    gt::gt(rowname_col = "ID", groupname_col = "Group") %>%
-    gt::tab_header(title = gt::md(paste("Model's evaluation metrics", sys_time)),
-                   subtitle = gt::md("Binary classification model")) %>%
-    gt::tab_source_note(gt::md(paste0("**Options**: ",
-                                      "**cutoff** = ", cutoff,
-                                      ", **TN_cost** = ", TN_cost,
-                                      ", **FP_cost** = ", FP_cost,
-                                      ", **FN_cost** = ", FN_cost,
-                                      ", **TP_cost** = ", TP_cost))) %>%
-    gt::tab_source_note(gt::md("More information available at: **https://github.com/ForesightAdamNowacki**.")) %>%
-    gt::tab_spanner(label = "Metrics section",
-                    columns = dplyr::vars(Metric, `Metric Abbreviation`, `Metric Name`)) %>%
-    gt::tab_spanner(label = "Performance section",
-                    columns = dplyr::vars(Score, Calculation)) %>%
-    gt::fmt_number(columns = dplyr::vars(Score),
-                   decimals = 4,
-                   use_seps = FALSE) %>%
-    gt::cols_align(align = "left", columns = dplyr::vars(Metric, `Metric Abbreviation`, `Metric Name`, Calculation)) %>%
-    gt::tab_options(heading.background.color = "black",
-                    table.background.color = "grey",
-                    column_labels.background.color = "black",
-                    row_group.background.color = "black",
-                    source_notes.background.color = "black",
-                    table.border.top.color = "black",
-                    table.border.top.width = gt::px(3),
-                    table.border.bottom.color = "black",
-                    table.border.bottom.width = gt::px(3),
-                    heading.title.font.size = 16,
-                    table.font.size = 12,
-                    source_notes.font.size = 10,
-                    table.width = gt::pct(100),
-                    data_row.padding = gt::px(5),
-                    row_group.padding = gt::px(10),
-                    source_notes.padding = gt::px(5)) %>% 
-    gt::opt_table_outline(width = gt::px(3), color = "black") %>%
-    gt::opt_table_lines()
-  
-  gt::gtsave(data = gt_table,
-             filename = paste(type_info, "binary_model_evaluation_metrics.png", sep = "_"))
-  
-  invisible(list("Confusion_Matrix_Explanation" = result_1,
-                 "Confusion_Matrix_Result" = result_2,
-                 "Assessment_of_Classifier_Effectiveness" = result_3))}
+  return(plot)
+}
+
+# Use case:
+factor_vs_factor_percentage_group_bar_plot(data = diamonds,
+                                           factor_var_1 = "cut",
+                                           factor_var_2 = "color")
 
 
+# ---------------------------------------------------------------------------- #
 
-# https://gt.rstudio.com/reference/gt_output.html
+# ---------------------------------------------------------------------------- #
+factor_circle_plot <- function(data,
+                               factor_var,
+                               title = "",
+                               caption = "",
+                               label_padding = 0.25,
+                               label_size = 4,
+                               title_size = 10,
+                               title_horizontal_position = 0.5,
+                               title_vertical_position = 0.5,
+                               text_size = 4){
+  
+  # Variables:
+  factor_var <- rlang::sym(factor_var)
+  factor_var <- dplyr::enquo(factor_var)                    
+  factor_var_name <- dplyr::quo_name(factor_var)
+  
+  # Names:
+  if(title == ""){title <- "CIRCLE PLOT"}
+  if(caption == ""){caption <- "SOURCE: UNKNOWN"}
+  
+  # Summary:
+  data_summary <- data %>%
+    dplyr::group_by(!!factor_var) %>%
+    dplyr::count() %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(percentage = 100 * n/sum(n))
+  
+  # Plot
+  packing <- packcircles::circleProgressiveLayout(data_summary$n, sizetype = 'area')
+  data_packing <- cbind(data_summary, packing)
+  ggplot_circle_data <- packcircles::circleLayoutVertices(packing, npoints = 10000)
+  
+  plot <- ggplot2::ggplot() +
+    ggplot2::geom_polygon(data = ggplot_circle_data,
+                          mapping = ggplot2::aes(x = x, 
+                                                 y = y,
+                                                 group = id,
+                                                 fill = as.factor(id)), 
+                          color = "black") +
+    ggplot2::geom_label(data = data_packing,
+                        mapping = ggplot2::aes(x = x,
+                                               y = y, 
+                                               label = !!factor_var),
+                        color = "black", 
+                        fill = "white",
+                        fontface = 1,
+                        size = label_size, 
+                        label.padding = ggplot2::unit(label_padding, "lines"),
+                        label.r = ggplot2::unit(0, "lines")) +
+    ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(nrow(data_summary), "Greys")) +
+    ggplot2::labs(caption = caption,
+                  title = title) +
+    ggplot2::theme(legend.position = "none",
+                   plot.title = ggplot2::element_text(size = title_size, color = "black", face = "bold", hjust = title_horizontal_position, vjust = title_vertical_position),
+                   axis.text.x = ggplot2::element_blank(),
+                   axis.title.x = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank(),
+                   panel.grid.major.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.minor.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.major.y = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.minor.y = ggplot2::element_line(linetype = "blank"),
+                   axis.ticks = ggplot2::element_blank(),
+                   plot.background = ggplot2::element_rect(fill = "gray80", color = "black", linetype = "solid", size = 1.5),
+                   panel.background = ggplot2::element_rect(fill = "gray90", color = "black", linetype = "solid"),
+                   plot.caption = ggplot2::element_text(size = text_size, color = "black", face = "bold", hjust = 1))
+  
+  return(plot)
+}
+
+# Use case:
+# factor_vs_factor_percentage_group_bar_plot(data = diamonds,
+#                                            factor_var = "color")  
+# ---------------------------------------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
+factor_waffle_plot <- function(data,
+                               factor_var,
+                               factor_axis = "",
+                               grid_size = 10,
+                               title = "",
+                               caption = "",
+                               title_size = 10,
+                               title_horizontal_position = 0.5,
+                               title_vertical_position = 0.5,
+                               text_size = 4){
+  
+  # Variables:
+  factor_var <- rlang::sym(factor_var)
+  factor_var <- dplyr::enquo(factor_var)                    
+  factor_var_name <- dplyr::quo_name(factor_var)
+  
+  # Names:
+  if(factor_axis == ""){factor_axis <- stringr::str_to_upper(factor_var_name)}
+  if(title == ""){title <- "WAFFLE PLOT"}
+  if(caption == ""){caption <- "SOURCE: UNKNOWN"}
+  
+  # Dimension check:
+  selected_factor_var <- data %>%
+    dplyr::select(!!factor_var)
+  unrounded_squares <- table(selected_factor_var) * (grid_size^2/nrow(selected_factor_var))
+  rounded_squares <- round(unrounded_squares)
+  factor_levels <- length(rounded_squares)
+  
+  if(sum(rounded_squares) == grid_size^2){
+    rounded_squares <- rounded_squares
+  }
+  
+  if(sum(rounded_squares) < grid_size^2){
+    
+    diff <- grid_size^2 - sum(rounded_squares)
+    names <- tibble::tibble(names = names(unrounded_squares),
+                            values = as.vector(unrounded_squares),
+                            values_ceiling = ceiling(values),
+                            ceiling_diff = values_ceiling - values) %>%
+      dplyr::arrange(ceiling_diff) %>%
+      dplyr::slice(1:diff) %>%
+      dplyr::pull(names)
+    
+    for(i in seq_along(names)){
+      id <- which(names(rounded_squares) == names[i])
+      rounded_squares[id] <- rounded_squares[id] + 1
+    }
+  }
+  
+  if(sum(rounded_squares) > grid_size^2){
+    
+    diff <- sum(rounded_squares) - grid_size^2
+    values <- tibble::tibble(names = names(unrounded_squares),
+                             values = as.vector(unrounded_squares),
+                             values_half = (floor(values) + ceiling(values))/2,
+                             values_half_diff = values - values_half)
+    names <- dplyr::bind_rows(values %>%
+                                dplyr::filter(values_half_diff > 0) %>%
+                                dplyr::arrange(values_half_diff),
+                              values %>%
+                                dplyr::filter(values_half_diff < 0) %>%
+                                dplyr::arrange(values_half_diff)) %>%
+      dplyr::slice(1:diff) %>%
+      dplyr::pull(names)
+    
+    for(i in seq_along(names)){
+      id <- which(names(rounded_squares) == names[i])
+      rounded_squares[id] <- rounded_squares[id] - 1
+    }
+  }
+  
+  # Plot
+  plot <- tidyr::expand_grid(y = 1:grid_size, x = 1:grid_size) %>%
+    dplyr::mutate(factor_category = rep(names(rounded_squares), times = as.vector(rounded_squares)),
+                  factor_category = factor(factor_category, levels = names(rounded_squares), ordered = TRUE)) %>%
+    ggplot2::ggplot(data = ., aes(x = y, y = x, fill = factor_category)) +
+    ggplot2::geom_tile(color = "black") +
+    ggplot2::scale_x_continuous(expand = base::c(0, 0)) +
+    ggplot2::scale_y_continuous(expand = base::c(0, 0)) +
+    ggplot2::labs(fill = factor_axis,
+                  caption = caption,
+                  title = title) +
+    ggplot2::theme(plot.title = ggplot2::element_text(size = title_size, color = "black", face = "bold", hjust = title_horizontal_position, vjust = title_vertical_position),
+                   axis.text.x = ggplot2::element_blank(),
+                   axis.title.x = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank(),
+                   panel.grid.major.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.minor.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.major.y = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.minor.y = ggplot2::element_line(linetype = "blank"),
+                   axis.ticks = ggplot2::element_blank(),
+                   plot.background = ggplot2::element_rect(fill = "gray80", color = "black", linetype = "solid", size = 1.5),
+                   panel.background = ggplot2::element_rect(fill = "gray90", color = "black", linetype = "solid"),
+                   plot.caption = ggplot2::element_text(size = text_size, color = "black", face = "bold", hjust = 1),
+                   legend.position = "right",
+                   legend.text = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   legend.title = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   legend.key = ggplot2::element_rect(colour = "gray90"),
+                   legend.box.background = ggplot2::element_rect(color = "black", linetype = "solid"),
+                   legend.background = ggplot2::element_rect(fill = "gray90", linetype = "solid", color = "black"),
+                   legend.box.spacing = ggplot2::unit(0.25, "cm")) +
+    ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(factor_levels, "Greys"))
+  
+  return(plot)
+}
+
+# Use case:
+# factor_waffle_plot(data = diamonds,
+#                    factor_var = "clarity")
+# ---------------------------------------------------------------------------- #
+
