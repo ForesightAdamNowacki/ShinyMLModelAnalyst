@@ -41,7 +41,9 @@ ui <- shiny::tagList(
           shiny::wellPanel(
             shiny::h4(shiny::strong("Dataset import")),
             shiny::fluidRow(
-              shiny::column(width = 12, shiny::fileInput(inputId = "File_Input_1_1", label = shiny::h5("Select import file:"))))),
+              shiny::column(width = 8, shiny::fileInput(inputId = "File_Input_1_1", label = shiny::h5("Select import file:"))),
+              shiny::br(),
+              shiny::column(width = 4, shiny::actionButton(inputId = "actionButton_1_1", label = shiny::h5("Restart:"), icon = shiny::icon("fas fa-undo"))))),
           
           shiny::wellPanel(
             shiny::h4(shiny::strong("Input data settings:")),
@@ -114,8 +116,6 @@ ui <- shiny::tagList(
       shiny::tabPanel(
         "Datetime")),
     
-    
-    
     shiny::navbarMenu(
       "2D - Data Visualisation Tool",
       shiny::tabPanel(
@@ -128,7 +128,9 @@ ui <- shiny::tagList(
             shiny::wellPanel(
               shiny::h4(shiny::strong("Dataset import")),
               shiny::fluidRow(
-                shiny::column(width = 12, shiny::fileInput(inputId = "File_Input_2_1", label = shiny::h5("Select import file"))))),
+                shiny::column(width = 8, shiny::fileInput(inputId = "File_Input_2_1", label = shiny::h5("Select import file:"))),
+                shiny::br(),
+                shiny::column(width = 4, shiny::actionButton(inputId = "actionButton_1_1", label = shiny::h5("Restart:"), icon = shiny::icon("fas fa-undo"))))),
             
             shiny::wellPanel(
               shiny::h4(shiny::strong("Input data settings:")),
@@ -420,6 +422,27 @@ server = function(input, output, session){
                    lengthMenu = list(c(5, 10, 25, 100, 1000, -1),
                                      c("5", "10", "25", "100", "1000", "All")),
                    searching = TRUE))
+  
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateSliderInput(session = session, inputId = "sliderInput_1_1_2_1", min = 0, max = 1, value = 0.5, step = 0.01)})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateRadioButtons(session = session, inputId = "radioButtons_1_1_2_2", choices = list("Yes" = TRUE, "No" = FALSE), selected = TRUE)})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateNumericInput(session = session, inputId = "numericInput_1_1_2_3", value = 42)})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateSelectInput(session = session, inputId = "selectInput_1_1_2_4", choices = list())})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_1_1", value = "")})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_1_2", value = "")})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_1_3", value = "")})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_1_4", value = "")})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateNumericInput(session = session, inputId = "numericInput_1_1_3_2_1", value = 12)})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateNumericInput(session = session, inputId = "numericInput_1_1_3_2_2", value = 10)})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateNumericInput(session = session, inputId = "numericInput_1_1_3_2_3", value = 4)})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateSelectInput(session = session, inputId = "selectInput_1_1_2_2_4", choices = select_box_input(vector = c(5, 10, 25, 50, 100)), selected = 10)})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateRadioButtons(session = session, inputId = "radioButtons_1_1_3_3_1", choices = list("Yes" = TRUE, "No" = FALSE), selected = TRUE)})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateRadioButtons(session = session, inputId = "radioButtons_1_1_3_3_2", choices = select_box_input(vector = c("left", "top", "right", "bottom")), selected = "bottom")})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateRadioButtons(session = session, inputId = "radioButtons_1_1_3_3_3", choices = select_box_input(vector = c("horizontal", "vertical")), selected = "horizontal")})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateRadioButtons(session = session, inputId = "radioButtons_1_1_3_3_4", choices = list("Yes" = TRUE, "No" = FALSE), selected = FALSE)})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_4_1", value = "")})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_4_2", value = "")})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_4_3", value = "")})
+  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_4_4", value = "")})
   
   # -------------------------------------------------------------------------- #
   # 2.1
