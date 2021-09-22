@@ -130,7 +130,7 @@ ui <- shiny::tagList(
               shiny::fluidRow(
                 shiny::column(width = 8, shiny::fileInput(inputId = "File_Input_2_1", label = shiny::h5("Select import file:"))),
                 shiny::br(),
-                shiny::column(width = 4, shiny::actionButton(inputId = "actionButton_1_1", label = shiny::h5("Restart:"), icon = shiny::icon("fas fa-undo"))))),
+                shiny::column(width = 4, shiny::actionButton(inputId = "actionButton_2_1", label = shiny::h5("Restart:"), icon = shiny::icon("fas fa-undo"))))),
             
             shiny::wellPanel(
               shiny::h4(shiny::strong("Input data settings:")),
@@ -366,8 +366,7 @@ server = function(input, output, session){
       colnames()
       select_box_input(vector = c(character_vars, factor_vars))})
 
-  shiny::observeEvent(eventExpr = input$File_Input_1_1,
-                      handlerExpr = {shiny::updateSelectInput(session, inputId = "selectInput_1_1_2_4", choices = factor_variables_1_1())})
+  shiny::observeEvent(eventExpr = input$File_Input_1_1, handlerExpr = {shiny::updateSelectInput(session, inputId = "selectInput_1_1_2_4", choices = factor_variables_1_1())})
 
   output$plot_1_1_1 <- shiny::renderPlot({
     factor_count_histogram_plot(data = dataset_1_1_(),
@@ -423,26 +422,8 @@ server = function(input, output, session){
                                      c("5", "10", "25", "100", "1000", "All")),
                    searching = TRUE))
   
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateSliderInput(session = session, inputId = "sliderInput_1_1_2_1", min = 0, max = 1, value = 0.5, step = 0.01)})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateRadioButtons(session = session, inputId = "radioButtons_1_1_2_2", choices = list("Yes" = TRUE, "No" = FALSE), selected = TRUE)})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateNumericInput(session = session, inputId = "numericInput_1_1_2_3", value = 42)})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateSelectInput(session = session, inputId = "selectInput_1_1_2_4", choices = list())})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_1_1", value = "")})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_1_2", value = "")})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_1_3", value = "")})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_1_4", value = "")})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateNumericInput(session = session, inputId = "numericInput_1_1_3_2_1", value = 12)})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateNumericInput(session = session, inputId = "numericInput_1_1_3_2_2", value = 10)})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateNumericInput(session = session, inputId = "numericInput_1_1_3_2_3", value = 4)})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateSelectInput(session = session, inputId = "selectInput_1_1_2_2_4", choices = select_box_input(vector = c(5, 10, 25, 50, 100)), selected = 10)})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateRadioButtons(session = session, inputId = "radioButtons_1_1_3_3_1", choices = list("Yes" = TRUE, "No" = FALSE), selected = TRUE)})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateRadioButtons(session = session, inputId = "radioButtons_1_1_3_3_2", choices = select_box_input(vector = c("left", "top", "right", "bottom")), selected = "bottom")})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateRadioButtons(session = session, inputId = "radioButtons_1_1_3_3_3", choices = select_box_input(vector = c("horizontal", "vertical")), selected = "horizontal")})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateRadioButtons(session = session, inputId = "radioButtons_1_1_3_3_4", choices = list("Yes" = TRUE, "No" = FALSE), selected = FALSE)})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_4_1", value = "")})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_4_2", value = "")})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_4_3", value = "")})
-  shiny::observeEvent(eventExpr = input$actionButton_1_1, handlerExpr = {shiny::updateTextInput(session = session, inputId = "textInput_1_1_3_4_4", value = "")})
+  # 1.1 Reset Button:
+  source("1_1_ResetButton.R", local = TRUE)
   
   # -------------------------------------------------------------------------- #
   # 2.1
@@ -467,10 +448,8 @@ server = function(input, output, session){
       colnames()
     select_box_input(vector = c(character_vars, factor_vars))})
   
-  shiny::observeEvent(eventExpr = input$File_Input_2_1,
-                      handlerExpr = {shiny::updateSelectInput(session, inputId = "selectInput_2_1_2_4", choices = factor_variables_2_1(), selected = factor_variables_2_1()[[1]])})
-  shiny::observeEvent(eventExpr = input$File_Input_2_1,
-                      handlerExpr = {shiny::updateSelectInput(session, inputId = "selectInput_2_1_2_5", choices = factor_variables_2_1(), selected = factor_variables_2_1()[[2]])})
+  shiny::observeEvent(eventExpr = input$File_Input_2_1, handlerExpr = {shiny::updateSelectInput(session, inputId = "selectInput_2_1_2_4", choices = factor_variables_2_1(), selected = factor_variables_2_1()[[1]])})
+  shiny::observeEvent(eventExpr = input$File_Input_2_1, handlerExpr = {shiny::updateSelectInput(session, inputId = "selectInput_2_1_2_5", choices = factor_variables_2_1(), selected = factor_variables_2_1()[[2]])})
   
   output$plot_2_1_1 <- shiny::renderPlot({
     factor_count_histogram_plot(data = dataset_2_1_(),
@@ -665,9 +644,11 @@ server = function(input, output, session){
                    lengthMenu = list(c(5, 10, 25, 100, 1000, -1),
                                      c("5", "10", "25", "100", "1000", "All")),
                    searching = TRUE))
+  
+  # 2.1 Reset Button:
+  source("2_1_ResetButton.R", local = TRUE)
+  
 }
-
-
 
 
 
