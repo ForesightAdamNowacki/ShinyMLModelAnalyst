@@ -1,0 +1,206 @@
+# 2_1_Plots.R
+plot_2_1_1 <- shiny::reactive({
+  factor_count_histogram_plot(data = dataset_2_1_(),
+                              factor_var = input$selectInput_2_1_2_4,
+                              title_size = input$numericInput_2_1_3_2_1,
+                              repel_label = input$radioButtons_2_1_3_3_4,
+                              text_size = input$numericInput_2_1_3_2_2,
+                              label_size = input$numericInput_2_1_3_2_3,
+                              factor_axis = input$textInput_2_1_3_1_1,
+                              title = input$textInput_2_1_3_4_1,
+                              count_axis = input$textInput_2_1_3_1_3,
+                              caption = input$textInput_2_1_3_1_5)})
+
+plot_2_1_2 <- shiny::reactive({
+  factor_percentage_histogram_plot(data = dataset_2_1_(),
+                                   factor_var = input$selectInput_2_1_2_4,
+                                   title_size = input$numericInput_2_1_3_2_1,
+                                   repel_label = input$radioButtons_2_1_3_3_4,
+                                   text_size = input$numericInput_2_1_3_2_2,
+                                   label_size = input$numericInput_2_1_3_2_3,
+                                   factor_axis = input$textInput_2_1_3_1_1,
+                                   title = input$textInput_2_1_3_4_2,
+                                   percentage_axis = input$textInput_2_1_3_1_4,
+                                   caption = input$textInput_2_1_3_1_5)})
+
+plot_2_1_3 <- shiny::reactive({
+  factor_waffle_plot(data = dataset_2_1_(),
+                     factor_var = input$selectInput_2_1_2_4,
+                     factor_axis = input$textInput_2_1_3_1_1,
+                     title_size = input$numericInput_2_1_3_2_1,
+                     text_size = input$numericInput_2_1_3_2_2,
+                     title = input$textInput_2_1_3_4_3,
+                     grid_size = as.numeric(input$selectInput_2_1_2_2_4),
+                     display_legend = input$radioButtons_2_1_3_3_1,
+                     legend_position = input$radioButtons_2_1_3_3_2,
+                     legend_direction = input$radioButtons_2_1_3_3_3,
+                     caption = input$textInput_2_1_3_1_5)})
+
+plot_2_1_4 <- shiny::reactive({
+  factor_circle_plot(data = dataset_2_1_(),
+                     factor_var = input$selectInput_2_1_2_4,
+                     title_size = input$numericInput_2_1_3_2_1,
+                     text_size = input$numericInput_2_1_3_2_2,
+                     repel_label = input$radioButtons_2_1_3_3_4,
+                     label_size = input$numericInput_2_1_3_2_3,
+                     title = input$textInput_2_1_3_4_4,
+                     caption = input$textInput_2_1_3_1_5)})
+
+plot_2_1_5 <- shiny::reactive({
+  factor_vs_factor_count_plot(data = dataset_2_1_(),
+                              factor_var_1 = input$selectInput_2_1_2_4,
+                              factor_var_2 = input$selectInput_2_1_2_5,
+                              factor_axis_1 = input$textInput_2_1_3_1_1,
+                              factor_axis_2 = input$textInput_2_1_3_1_2,
+                              repel_label = input$radioButtons_2_1_3_3_4,
+                              title = input$textInput_2_1_3_4_5,
+                              caption = input$textInput_2_1_3_1_5,
+                              title_size = input$numericInput_2_1_3_2_1,
+                              text_size = input$numericInput_2_1_3_2_2,
+                              label_size = input$numericInput_2_1_3_2_3)})
+
+plot_2_1_6 <- shiny::reactive({
+  factor_vs_factor_percentage_group_tile_plot(data = dataset_2_1_(),
+                                              factor_var_1 = input$selectInput_2_1_2_4,
+                                              factor_var_2 = input$selectInput_2_1_2_5,
+                                              factor_axis_1 = input$textInput_2_1_3_1_1,
+                                              factor_axis_2 = input$textInput_2_1_3_1_2,
+                                              title = input$textInput_2_1_3_4_6,
+                                              repel_label = input$radioButtons_2_1_3_3_4,
+                                              caption = input$textInput_2_1_3_1_5,
+                                              title_size = input$numericInput_2_1_3_2_1,
+                                              text_size = input$numericInput_2_1_3_2_2,
+                                              label_size = input$numericInput_2_1_3_2_3)})
+
+plot_2_1_7 <- shiny::reactive({
+  factor_vs_factor_percentage_group_tile_plot(data = dataset_2_1_(),
+                                              factor_var_1 = input$selectInput_2_1_2_5,
+                                              factor_var_2 = input$selectInput_2_1_2_4,
+                                              factor_axis_1 = input$textInput_2_1_3_1_2,
+                                              factor_axis_2 = input$textInput_2_1_3_1_1,
+                                              repel_label = input$radioButtons_2_1_3_3_4,
+                                              title = input$textInput_2_1_3_4_7,
+                                              caption = input$textInput_2_1_3_1_5,
+                                              title_size = input$numericInput_2_1_3_2_1,
+                                              text_size = input$numericInput_2_1_3_2_2,
+                                              label_size = input$numericInput_2_1_3_2_3)})
+
+plot_2_1_8 <- shiny::reactive({
+  factor_vs_factor_parallel_plot(data = dataset_2_1_(),
+                                 factor_var_1 = input$selectInput_2_1_2_4,
+                                 factor_var_2 = input$selectInput_2_1_2_5,
+                                 title = input$textInput_2_1_3_4_8,
+                                 caption = input$textInput_2_1_3_1_5,
+                                 title_size = input$numericInput_2_1_3_2_1,
+                                 text_size = input$numericInput_2_1_3_2_2,
+                                 repel_label = input$radioButtons_2_1_3_3_4,
+                                 label_size = input$numericInput_2_1_3_2_3)})
+
+plot_2_1_9 <- shiny::reactive({
+  factor_vs_factor_percentage_plot(data = dataset_2_1_(),
+                                   factor_var_1 = input$selectInput_2_1_2_4,
+                                   factor_var_2 = input$selectInput_2_1_2_5,
+                                   factor_axis_1 = input$textInput_2_1_3_1_1,
+                                   factor_axis_2 = input$textInput_2_1_3_1_2,
+                                   title = input$textInput_2_1_3_4_9,
+                                   caption = input$textInput_2_1_3_1_5,
+                                   title_size = input$numericInput_2_1_3_2_1,
+                                   repel_label = input$radioButtons_2_1_3_3_4,
+                                   text_size = input$numericInput_2_1_3_2_2,
+                                   label_size = input$numericInput_2_1_3_2_3)})
+
+plot_2_1_10 <- shiny::reactive({
+  factor_vs_factor_percentage_group_bar_plot(data = dataset_2_1_(),
+                                             factor_var_1 = input$selectInput_2_1_2_4,
+                                             factor_var_2 = input$selectInput_2_1_2_5,
+                                             factor_axis_1 = input$textInput_2_1_3_1_1,
+                                             factor_axis_2 = input$textInput_2_1_3_1_2,
+                                             title = input$textInput_2_1_3_4_10,
+                                             caption = input$textInput_2_1_3_1_5,
+                                             title_size = input$numericInput_2_1_3_2_1,
+                                             text_size = input$numericInput_2_1_3_2_2,
+                                             display_legend = input$radioButtons_2_1_3_3_1,
+                                             legend_position = input$radioButtons_2_1_3_3_2,
+                                             legend_direction = input$radioButtons_2_1_3_3_3,
+                                             label_size = input$numericInput_2_1_3_2_3)})
+
+plot_2_1_11 <- shiny::reactive({
+  factor_vs_factor_percentage_group_bar_plot(data = dataset_2_1_(),
+                                             factor_var_1 = input$selectInput_2_1_2_5,
+                                             factor_var_2 = input$selectInput_2_1_2_4,
+                                             factor_axis_1 = input$textInput_2_1_3_1_2,
+                                             factor_axis_2 = input$textInput_2_1_3_1_1,
+                                             title = input$textInput_2_1_3_4_11,
+                                             caption = input$textInput_2_1_3_1_5,
+                                             title_size = input$numericInput_2_1_3_2_1,
+                                             text_size = input$numericInput_2_1_3_2_2,
+                                             display_legend = input$radioButtons_2_1_3_3_1,
+                                             legend_position = input$radioButtons_2_1_3_3_2,
+                                             legend_direction = input$radioButtons_2_1_3_3_3,
+                                             label_size = input$numericInput_2_1_3_2_3)})
+
+# plot_2_1_12 <- shiny::reactive({})
+
+plot_2_1_13 <- shiny::reactive({
+  factor_count_histogram_plot(data = dataset_2_1_(),
+                              factor_var = input$selectInput_2_1_2_5,
+                              title_size = input$numericInput_2_1_3_2_1,
+                              text_size = input$numericInput_2_1_3_2_2,
+                              label_size = input$numericInput_2_1_3_2_3,
+                              factor_axis = input$textInput_2_1_3_1_2,
+                              title = input$textInput_2_1_3_4_13,
+                              repel_label = input$radioButtons_2_1_3_3_4,
+                              count_axis = input$textInput_2_1_3_1_3,
+                              caption = input$textInput_2_1_3_1_5)})
+
+plot_2_1_14 <- shiny::reactive({
+  factor_percentage_histogram_plot(data = dataset_2_1_(),
+                                   factor_var = input$selectInput_2_1_2_5,
+                                   title_size = input$numericInput_2_1_3_2_1,
+                                   text_size = input$numericInput_2_1_3_2_2,
+                                   label_size = input$numericInput_2_1_3_2_3,
+                                   factor_axis = input$textInput_2_1_3_1_2,
+                                   repel_label = input$radioButtons_2_1_3_3_4,
+                                   title = input$textInput_2_1_3_4_14,
+                                   percentage_axis = input$textInput_2_1_3_1_4,
+                                   caption = input$textInput_2_1_3_1_5)})
+
+plot_2_1_15 <- shiny::reactive({
+  factor_waffle_plot(data = dataset_2_1_(),
+                     factor_var = input$selectInput_2_1_2_5,
+                     factor_axis = input$textInput_2_1_3_1_2,
+                     title_size = input$numericInput_2_1_3_2_1,
+                     text_size = input$numericInput_2_1_3_2_2,
+                     grid_size = as.numeric(input$selectInput_2_1_2_2_4),
+                     title = input$textInput_2_1_3_4_15,
+                     display_legend = input$radioButtons_2_1_3_3_1,
+                     legend_position = input$radioButtons_2_1_3_3_2,
+                     legend_direction = input$radioButtons_2_1_3_3_3,
+                     caption = input$textInput_2_1_3_1_5)})
+
+plot_2_1_16 <- shiny::reactive({
+  factor_circle_plot(data = dataset_2_1_(),
+                     factor_var = input$selectInput_2_1_2_5,
+                     title_size = input$numericInput_2_1_3_2_1,
+                     text_size = input$numericInput_2_1_3_2_2,
+                     label_size = input$numericInput_2_1_3_2_3,
+                     repel_label = input$radioButtons_2_1_3_3_4,
+                     title = input$textInput_2_1_3_4_16,
+                     caption = input$textInput_2_1_3_1_5)})
+
+output$plot_2_1_1 <- shiny::renderPlot({plot_2_1_1()})
+output$plot_2_1_2 <- shiny::renderPlot({plot_2_1_2()})
+output$plot_2_1_3 <- shiny::renderPlot({plot_2_1_3()})
+output$plot_2_1_4 <- shiny::renderPlot({plot_2_1_4()})
+output$plot_2_1_5 <- shiny::renderPlot({plot_2_1_5()})
+output$plot_2_1_6 <- shiny::renderPlot({plot_2_1_6()})
+output$plot_2_1_7 <- shiny::renderPlot({plot_2_1_7()})
+output$plot_2_1_8 <- shiny::renderPlot({plot_2_1_8()})
+output$plot_2_1_9 <- shiny::renderPlot({plot_2_1_9()})
+output$plot_2_1_10 <- shiny::renderPlot({plot_2_1_10()})
+output$plot_2_1_11 <- shiny::renderPlot({plot_2_1_11()})
+# output$plot_2_1_12 <- shiny::renderPlot({plot_2_1_12()})  
+output$plot_2_1_13 <- shiny::renderPlot({plot_2_1_13()})
+output$plot_2_1_14 <- shiny::renderPlot({plot_2_1_14()})
+output$plot_2_1_15 <- shiny::renderPlot({plot_2_1_15()})
+output$plot_2_1_16 <- shiny::renderPlot({plot_2_1_16()})
