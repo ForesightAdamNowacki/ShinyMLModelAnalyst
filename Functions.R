@@ -20,6 +20,18 @@ data_sampler <- function(data,
 # ---------------------------------------------------------------------------- #
 
 # ---------------------------------------------------------------------------- #
+save_filename_paster <- function(vector){
+  sys_time <- stringr::str_replace_all(Sys.time(), ":", "-")
+  return_ <- paste0(paste(sys_time, paste(vector, collapse = " ")), ".png")
+  return(return_)
+}
+
+# Use case:
+# save_filename_paster(vector = c("Var1", "Var2", "Title"))
+
+# ---------------------------------------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
 factor_count_histogram_plot <- function(data,
                                         factor_var,
                                         title = "",
@@ -941,7 +953,5 @@ factor_vs_factor_parallel_plot <- function(data,
 #                                factor_var_2 = "cut")
 # ---------------------------------------------------------------------------- #
 
-# ---------------------------------------------------------------------------- #
- 
 
 

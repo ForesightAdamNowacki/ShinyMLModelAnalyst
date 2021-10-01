@@ -86,10 +86,10 @@ ui <- shiny::tagList(
               shiny::wellPanel(
                 shiny::h5(shiny::strong("Titles names:")),
                 shiny::fluidRow(
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_1_1_3_4_1", label = shiny::h5("Plot 1:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_1_1_3_4_2", label = shiny::h5("Plot 2:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_1_1_3_4_3", label = shiny::h5("Plot 3:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_1_1_3_4_4", label = shiny::h5("Plot 4:"), value = ""))),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_1_1_3_4_1", label = shiny::h5("Plot 1:"), value = "QUANTITY BAR PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_1_1_3_4_2", label = shiny::h5("Plot 2:"), value = "PERCENTAGE BAR PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_1_1_3_4_3", label = shiny::h5("Plot 3:"), value = "WAFFLE PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_1_1_3_4_4", label = shiny::h5("Plot 4:"), value = "CIRCLE PLOT"))),
                 style = "padding: 5px;"))),
           
           shiny::mainPanel(
@@ -107,6 +107,11 @@ ui <- shiny::tagList(
                                                    shiny::plotOutput("plot_1_1_2"),
                                                    shiny::plotOutput("plot_1_1_3"),
                                                    shiny::plotOutput("plot_1_1_4"))),
+                shiny::fluidRow(
+                  shiny::column(width = 3, shiny::downloadButton(outputId = "downloadButton_1_1_2_1", label = NULL, icon = shiny::icon("fas fa-download"))),
+                  shiny::column(width = 3, shiny::downloadButton(outputId = "downloadButton_1_1_2_2", label = NULL, icon = shiny::icon("fas fa-download"))),
+                  shiny::column(width = 3, shiny::downloadButton(outputId = "downloadButton_1_1_2_3", label = NULL, icon = shiny::icon("fas fa-download"))),
+                  shiny::column(width = 3, shiny::downloadButton(outputId = "downloadButton_1_1_2_4", label = NULL, icon = shiny::icon("fas fa-download")))),
                 shiny::hr()),
               shiny::tabPanel(
                 title = "Panel 3"))))),
@@ -177,25 +182,25 @@ ui <- shiny::tagList(
               shiny::wellPanel(
                 shiny::h5(shiny::strong("Titles names:")),
                 shiny::fluidRow(
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_1", label = shiny::h5("Plot 1:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_2", label = shiny::h5("Plot 2:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_3", label = shiny::h5("Plot 3:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_4", label = shiny::h5("Plot 4:"), value = ""))),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_1", label = shiny::h5("Plot 1:"), value = "QUANTITY BAR PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_2", label = shiny::h5("Plot 2:"), value = "PERCENTAGE BAR PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_3", label = shiny::h5("Plot 3:"), value = "WAFFLE PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_4", label = shiny::h5("Plot 4:"), value = "CIRCLE PLOT"))),
                 shiny::fluidRow(
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_5", label = shiny::h5("Plot 5:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_6", label = shiny::h5("Plot 6:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_7", label = shiny::h5("Plot 7:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_8", label = shiny::h5("Plot 8:"), value = ""))),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_5", label = shiny::h5("Plot 5:"), value = "QUANTITY TILE PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_6", label = shiny::h5("Plot 6:"), value = "GROUP PERCENTAGE TILE PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_7", label = shiny::h5("Plot 7:"), value = "GROUP PERCENTAGE TILE PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_8", label = shiny::h5("Plot 8:"), value = "PARALLEL PLOT"))),
                 shiny::fluidRow(
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_9", label = shiny::h5("Plot 9:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_10", label = shiny::h5("Plot 10:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_11", label = shiny::h5("Plot 11:"), value = "")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_9", label = shiny::h5("Plot 9:"), value = "PERCENTAGE TILE PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_10", label = shiny::h5("Plot 10:"), value = "GROUP PERCENTAGE BAR PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_11", label = shiny::h5("Plot 11:"), value = "GROUP PERCENTAGE BAR PLOT")),
                   shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_12", label = shiny::h5("Plot 12:"), value = ""))),
                 shiny::fluidRow(
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_13", label = shiny::h5("Plot 13:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_14", label = shiny::h5("Plot 14:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_15", label = shiny::h5("Plot 15:"), value = "")),
-                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_16", label = shiny::h5("Plot 16:"), value = ""))),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_13", label = shiny::h5("Plot 13:"), value = "QUANTITY BAR PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_14", label = shiny::h5("Plot 14:"), value = "PERCENTAGE BAR PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_15", label = shiny::h5("Plot 15:"), value = "WAFFLE PLOT")),
+                  shiny::column(width = 3, shiny::textInput(inputId = "textInput_2_1_3_4_16", label = shiny::h5("Plot 16:"), value = "CIRCLE PLOT"))),
                 style = "padding: 5px;"))),
           
           shiny::mainPanel(
@@ -433,113 +438,21 @@ server = function(input, output, session){
   
   # -------------------------------------------------------------------------- #
   # 1.1
-  dataset_1_1 <- shiny::reactive({
-    file_import_1_1 <- input$File_Input_1_1
-    if (is.null(file_import_1_1))
-      return(NULL)
-    readr::read_csv2(file_import_1_1$datapath)})
-  
-  dataset_1_1_ <- shiny::reactive({
-    data_sampler(data = dataset_1_1(),
-                 data_fraction = input$sliderInput_1_1_2_1,
-                 set_seed = input$radioButtons_1_1_2_2,
-                 seed_value = input$numericInput_1_1_2_3)})
-  
-  factor_variables_1_1 <- shiny::reactive({
-    character_vars <- dataset_1_1_() %>%
-      dplyr::select_if(is.character) %>%
-      colnames()
-    factor_vars <- dataset_1_1_() %>%
-      dplyr::select_if(is.factor) %>%
-      colnames()
-    select_box_input(vector = c(character_vars, factor_vars))})
-  
-  shiny::observeEvent(eventExpr = input$File_Input_1_1, handlerExpr = {shiny::updateSelectInput(session, inputId = "selectInput_1_1_2_4", choices = factor_variables_1_1())})
-  
-  output$plot_1_1_1 <- shiny::renderPlot({
-    factor_count_histogram_plot(data = dataset_1_1_(),
-                                factor_var = input$selectInput_1_1_2_4,
-                                title_size = input$numericInput_1_1_3_2_1,
-                                repel_label = input$radioButtons_1_1_3_3_4,
-                                text_size = input$numericInput_1_1_3_2_2,
-                                label_size = input$numericInput_1_1_3_2_3,
-                                factor_axis = input$textInput_1_1_3_1_1,
-                                title = input$textInput_1_1_3_4_1,
-                                count_axis = input$textInput_1_1_3_1_2,
-                                caption = input$textInput_1_1_3_1_4)})
-  
-  output$plot_1_1_2 <- shiny::renderPlot({
-    factor_percentage_histogram_plot(data = dataset_1_1_(),
-                                     factor_var = input$selectInput_1_1_2_4,
-                                     title_size = input$numericInput_1_1_3_2_1,
-                                     repel_label = input$radioButtons_1_1_3_3_4,
-                                     text_size = input$numericInput_1_1_3_2_2,
-                                     label_size = input$numericInput_1_1_3_2_3,
-                                     factor_axis = input$textInput_1_1_3_1_1,
-                                     title = input$textInput_1_1_3_4_2,
-                                     percentage_axis = input$textInput_1_1_3_1_3,
-                                     caption = input$textInput_1_1_3_1_4)})
-  
-  output$plot_1_1_3 <- shiny::renderPlot({
-    factor_waffle_plot(data = dataset_1_1_(),
-                       factor_var = input$selectInput_1_1_2_4,
-                       factor_axis = input$textInput_1_1_3_1_1,
-                       title_size = input$numericInput_1_1_3_2_1,
-                       text_size = input$numericInput_1_1_3_2_2,
-                       title = input$textInput_1_1_3_4_3,
-                       grid_size = as.numeric(input$selectInput_1_1_2_2_4),
-                       display_legend = input$radioButtons_1_1_3_3_1,
-                       legend_position = input$radioButtons_1_1_3_3_2,
-                       legend_direction = input$radioButtons_1_1_3_3_3,
-                       caption = input$textInput_1_1_3_1_4)})
-  
-  output$plot_1_1_4 <- shiny::renderPlot({
-    factor_circle_plot(data = dataset_1_1_(),
-                       factor_var = input$selectInput_1_1_2_4,
-                       title_size = input$numericInput_1_1_3_2_1,
-                       text_size = input$numericInput_1_1_3_2_2,
-                       repel_label = input$radioButtons_1_1_3_3_4,
-                       label_size = input$numericInput_1_1_3_2_3,
-                       title = input$textInput_1_1_3_4_4,
-                       caption = input$textInput_1_1_3_1_4)})
-  
-  output$dataset_1_1 <- DT::renderDataTable(
-    expr = dataset_1_1_(),
-    options = list(pageLength = 25,
-                   lengthMenu = list(c(5, 10, 25, 100, 1000, -1),
-                                     c("5", "10", "25", "100", "1000", "All")),
-                   searching = TRUE))
-  
-  # 1.1 Reset Button:
-  source("1_1_ResetButton.R", local = TRUE)
+  source("1_1_Dataset.R", local = TRUE)
+  source("1_1_Table.R", local = TRUE)
+  source("1_1_Variables.R", local = TRUE)
+  source("1_1_Plots.R", local = TRUE)
+  source("1_1_Reset.R", local = TRUE)
+  source("1_1_Download.R", local = TRUE)
   
   # -------------------------------------------------------------------------- #
   # 2.1
-  # Dataset:
   source("2_1_Dataset.R", local = TRUE)
-  
-  # Table:
   source("2_1_Table.R", local = TRUE)
-  
-  # Variables:
   source("2_1_Variables.R", local = TRUE)
-  
-  # Plots:
   source("2_1_Plots.R", local = TRUE)
-
-  # Reset:
   source("2_1_Reset.R", local = TRUE)
-
-  # Download:
-  
-
-  
-  
-  
-  
-
-  
-
+  source("2_1_Download.R", local = TRUE)
   
   # -------------------------------------------------------------------------- #
   
