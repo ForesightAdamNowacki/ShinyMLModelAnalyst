@@ -953,5 +953,294 @@ factor_vs_factor_parallel_plot <- function(data,
 #                                factor_var_2 = "cut")
 # ---------------------------------------------------------------------------- #
 
+# ---------------------------------------------------------------------------- #
+numeric_violin_box_plot <- function(data,
+                                    numeric_var,
+                                    title = "",
+                                    caption = "",
+                                    title_size = 10,
+                                    text_size = 7,
+                                    title_horizontal_position = 0.5,
+                                    title_vertical_position = 0.5,
+                                    label_padding = 0.25,
+                                    label_size = 4,
+                                    repel_label = FALSE){
+
+# Variables:
+numeric_var <- rlang::sym(numeric_var)
+numeric_var <- dplyr::enquo(numeric_var)
+numeric_var_name <- dplyr::quo_name(numeric_var)
+
+# Names:
+if(title == ""){title <- "VIOLIN & BOX PLOT"}
+if(caption == ""){caption <- "SOURCE: UNKNOWN"}
+
+# if(drop_outliers == TRUE){
+#   
+#   outliers <- data %>%
+#     dplyr::summarise(upper = quantile(!!numeric_var, prob = 0.999, na.rm = TRUE),
+#                      lower = quantile(!!numeric_var, prob = 0.001, na.rm = TRUE))
+#   data <- data %>%
+#     dplyr::filter(y >= outliers$lower & y <= outliers$upper)}
+
+
+# Summary data
+data_summary <- data %>%
+  dplyr::summarise(Q1 = quantile(!!numeric_var, prob = 0.25, na.rm = TRUE),
+                   Q2 = quantile(!!numeric_var, prob = 0.50, na.rm = TRUE),
+                   Q3 = quantile(!!numeric_var, prob = 0.75, na.rm = TRUE),
+                   Mean = mean(!!numeric_var, na.rm = TRUE),
+                   Min = min(!!numeric_var, na.rm = TRUE),
+                   Max = max(!!numeric_var, na.rm = TRUE)) %>%
+  tidyr::pivot_longer(names_to = "Measure",
+                      values_to = "Value",
+                      cols = c("Q1", "Q2", "Q3", "Mean", "Min", "Max")) %>%
+  dplyr::mutate(Label = paste(Measure, round(Value, 2), sep = ": "))
+
+
+plot <- ggplot2::ggplot(data = data) +
+  ggplot2::geom_hline(data = data_summary,
+                      mapping = ggplot2::aes(yintercept = Value), lty = 4) +
+  ggplot2::geom_boxplot(mapping = ggplot2::aes(x = -1,
+                                               y = !!numeric_var),
+                        fill = "gray60", color = "black", outlier.color = "black", notch = TRUE, lwd = 1) +
+  ggplot2::geom_violin(mapping = ggplot2::aes(x = 1,
+                                               y = !!numeric_var),
+                       lwd = 1, scale = "width", color = "black", fill = "gray60", trim = FALSE) +
+  ggplot2::stat_summary(aes(x = -1, y = !!numeric_var), fun = mean, color = "black", geom = "point", shape = 19, size = 2.5) +
+  ggplot2::stat_summary(aes(x = -1, y = !!numeric_var), fun = mean, color = "white", geom = "point", shape = 19, size = 1) +
+  ggplot2::labs(x = "",
+                y = numeric_var_name,
+                caption = caption,
+                title = title) +
+  ggplot2::theme(legend.position = "none",
+                 plot.title = ggplot2::element_text(size = title_size, color = "black", face = "bold", hjust = title_horizontal_position, vjust = title_vertical_position),
+                 axis.text.x = ggplot2::element_blank(),
+                 axis.title.x = ggplot2::element_blank(),
+                 axis.text.y = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                 axis.title.y = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                 panel.grid.major.x = ggplot2::element_line(linetype = "blank"),
+                 panel.grid.minor.x = ggplot2::element_line(linetype = "blank"),
+                 panel.grid.major.y = ggplot2::element_line(color = "black", linetype = "dotted"),
+                 panel.grid.minor.y = ggplot2::element_line(linetype = "blank"),
+                 axis.ticks = ggplot2::element_line(size = 1, color = "black", linetype = "dotted"),
+                 axis.ticks.x = ggplot2::element_blank(),
+                 axis.ticks.length = ggplot2::unit(0.1, "cm"),
+                 plot.background = ggplot2::element_rect(fill = "gray80", color = "black", linetype = "solid", size = 1.5),
+                 panel.background = ggplot2::element_rect(fill = "gray90", color = "black", linetype = "solid"),
+                 plot.caption = ggplot2::element_text(size = text_size, color = "black", face = "bold", hjust = 1)); plot
+
+if(repel_label == TRUE){
+  plot <- plot +
+    ggrepel::geom_label_repel(data = data_summary,
+                              mapping = ggplot2::aes(x = 0,
+                                                     y = Value,
+                                                     label = Label),
+                              color = "black", 
+                              fill = "white",
+                              fontface = 1,
+                              size = label_size, 
+                              label.padding = ggplot2::unit(label_padding, "lines"),
+                              label.r = ggplot2::unit(0, "lines"),
+                              direction = "y")
+} else {
+  plot <- plot +
+    ggplot2::geom_label(data = data_summary,
+                        mapping = ggplot2::aes(x = 0,
+                                               y = Value,
+                                               label = Label),
+                        color = "black", 
+                        fill = "white",
+                        fontface = 1,
+                        size = label_size, 
+                        label.padding = ggplot2::unit(label_padding, "lines"),
+                        label.r = ggplot2::unit(0, "lines"))}
+return(plot)
+}
+
+# Use case:
+# numeric_violin_box_plot(data = diamonds,
+#                         numeric_var = "y",
+#                         drop_outliers = TRUE,
+#                         repel_label = TRUE)
+# ---------------------------------------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
+numeric_count_bar_plot <- function(data, 
+                                   numeric_var,
+                                   title = "",
+                                   caption = "",
+                                   count_axis = "",
+                                   histogram_bars = 5,
+                                   digits_lab = 2,
+                                   expansion_multiplier = 0.05,
+                                   title_size = 10,
+                                   text_size = 7,
+                                   title_horizontal_position = 0.5,
+                                   title_vertical_position = 0.5,
+                                   repel_label = FALSE,
+                                   label_padding = 0.25,
+                                   label_size = 4){
+  
+  # Variables:
+  numeric_var <- rlang::sym(numeric_var)
+  numeric_var <- dplyr::enquo(numeric_var)
+  numeric_var_name <- dplyr::quo_name(numeric_var)
+  
+  # Names:
+  if(title == ""){title <- "COUNT BAR PLOT"}
+  if(caption == ""){caption <- "SOURCE: UNKNOWN"}
+  if(count_axis == ""){count_axis <- "COUNT"}
+  
+  # Summary data:
+  summary_data <- data %>%
+    dplyr::mutate(cuts = ggplot2::cut_interval(!!numeric_var, n = histogram_bars, digits_lab = digits_lab)) %>%
+    dplyr::group_by(cuts) %>%
+    dplyr::summarise(n = dplyr::n()) %>%
+    dplyr::ungroup() %>%
+    tidyr::complete(cuts, fill = list(n = 0))
+  
+  # Plot:
+  plot <- summary_data  %>%
+    ggplot2::ggplot(data = ., mapping = ggplot2::aes(x = cuts, y = n, label = n)) +
+    ggplot2::geom_histogram(stat = "identity", binwidth = 0, width = 1, col = "black", lwd = 0.5, fill = "gray60") +
+    ggplot2::labs(x = numeric_var_name,
+                  y = count_axis,
+                  title = title,
+                  caption = caption) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = expansion_multiplier)) +
+    ggplot2::theme(legend.position = "none",
+                   plot.title = ggplot2::element_text(size = title_size, color = "black", face = "bold", hjust = title_horizontal_position, vjust = title_vertical_position),
+                   axis.text.x = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.x = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   axis.text.y = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.y = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   panel.grid.major.x = ggplot2::element_line(color = "black", linetype = "dotted"),
+                   panel.grid.minor.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.major.y = ggplot2::element_line(color = "black", linetype = "dotted"),
+                   panel.grid.minor.y = ggplot2::element_line(linetype = "blank"),
+                   axis.ticks = ggplot2::element_line(size = 1, color = "black", linetype = "dotted"),
+                   axis.ticks.length = ggplot2::unit(0.1, "cm"),
+                   plot.background = ggplot2::element_rect(fill = "gray80", color = "black", linetype = "solid", size = 1.5),
+                   panel.background = ggplot2::element_rect(fill = "gray90", color = "black", linetype = "solid"),
+                   plot.caption = ggplot2::element_text(size = text_size, color = "black", face = "bold", hjust = 1))
+  
+  if(repel_label == TRUE){
+    plot <- plot +
+      ggrepel::geom_label_repel(color = "black", 
+                                fill = "white",
+                                fontface = 1,
+                                size = label_size, 
+                                label.padding = ggplot2::unit(label_padding, "lines"),
+                                label.r = ggplot2::unit(0, "lines"))
+  } else {
+    plot <- plot +
+      ggplot2::geom_label(color = "black", 
+                          fill = "white",
+                          fontface = 1,
+                          size = label_size, 
+                          label.padding = ggplot2::unit(label_padding, "lines"),
+                          label.r = ggplot2::unit(0, "lines"))
+  }
+  return(plot)
+}
+
+# Use case:
+# numeric_count_bar_plot(data = diamonds,
+#                        numeric_var = "depth")
+# ---------------------------------------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
+numeric_percentage_bar_plot <- function(data, 
+                                        numeric_var,
+                                        title = "",
+                                        caption = "",
+                                        percentage_axis = "",
+                                        histogram_bars = 5,
+                                        digits_lab = 2,
+                                        expansion_multiplier = 0.05,
+                                        title_size = 10,
+                                        text_size = 7,
+                                        title_horizontal_position = 0.5,
+                                        title_vertical_position = 0.5,
+                                        repel_label = FALSE,
+                                        label_padding = 0.25,
+                                        label_size = 4,
+                                        percentage_breaks = 11){
+  
+  # Variables:
+  numeric_var <- rlang::sym(numeric_var)
+  numeric_var <- dplyr::enquo(numeric_var)
+  numeric_var_name <- dplyr::quo_name(numeric_var)
+  
+  # Names:
+  if(title == ""){title <- "PERCENTAGE BAR PLOT"}
+  if(caption == ""){caption <- "SOURCE: UNKNOWN"}
+  if(percentage_axis == ""){percentage_axis <- "PERCENTAGE"}
+  
+  # Summary data:
+  summary_data <- data %>%
+    dplyr::mutate(cuts = ggplot2::cut_interval(!!numeric_var, n = histogram_bars, digits_lab = digits_lab)) %>%
+    dplyr::group_by(cuts) %>%
+    dplyr::summarise(n = dplyr::n()) %>%
+    dplyr::ungroup() %>%
+    tidyr::complete(cuts, fill = list(n = 0)) %>%
+    dplyr::mutate(percentage = n/sum(n))
+  
+  # plot:
+  plot <- summary_data  %>%
+    ggplot2::ggplot(data = ., mapping = ggplot2::aes(x = cuts, y = percentage, label = paste0(round(100 * percentage, 1), "%"))) +
+    ggplot2::geom_histogram(stat = "identity", binwidth = 0, width = 1, col = "black", lwd = 0.5, fill = "gray60") +
+    ggplot2::labs(x = numeric_var_name,
+                  y = percentage_axis,
+                  title = title,
+                  caption = caption) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = expansion_multiplier),
+                                labels = scales::percent_format(accuracy = 1), 
+                                breaks = base::seq(from = 0, to = 1, length.out = percentage_breaks)) +
+    ggplot2::theme(legend.position = "none",
+                   plot.title = ggplot2::element_text(size = title_size, color = "black", face = "bold", hjust = title_horizontal_position, vjust = title_vertical_position),
+                   axis.text.x = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.x = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   axis.text.y = ggplot2::element_text(size = text_size, color = "black", face = "plain"),
+                   axis.title.y = ggplot2::element_text(size = text_size, color = "black", face = "bold"),
+                   panel.grid.major.x = ggplot2::element_line(color = "black", linetype = "dotted"),
+                   panel.grid.minor.x = ggplot2::element_line(linetype = "blank"),
+                   panel.grid.major.y = ggplot2::element_line(color = "black", linetype = "dotted"),
+                   panel.grid.minor.y = ggplot2::element_line(linetype = "blank"),
+                   axis.ticks = ggplot2::element_line(size = 1, color = "black", linetype = "dotted"),
+                   axis.ticks.length = ggplot2::unit(0.1, "cm"),
+                   plot.background = ggplot2::element_rect(fill = "gray80", color = "black", linetype = "solid", size = 1.5),
+                   panel.background = ggplot2::element_rect(fill = "gray90", color = "black", linetype = "solid"),
+                   plot.caption = ggplot2::element_text(size = text_size, color = "black", face = "bold", hjust = 1))
+  
+  if(repel_label == TRUE){
+    plot <- plot +
+      ggrepel::geom_label_repel(color = "black", 
+                                fill = "white",
+                                fontface = 1,
+                                size = label_size, 
+                                label.padding = ggplot2::unit(label_padding, "lines"),
+                                label.r = ggplot2::unit(0, "lines"))
+  } else {
+    plot <- plot +
+      ggplot2::geom_label(color = "black", 
+                          fill = "white",
+                          fontface = 1,
+                          size = label_size, 
+                          label.padding = ggplot2::unit(label_padding, "lines"),
+                          label.r = ggplot2::unit(0, "lines"))
+  }
+  return(plot)
+}
+
+# Use case:
+# numeric_percentage_bar_plot(data = diamonds,
+#                             numeric_var = "depth")
+# ---------------------------------------------------------------------------- #
+
+
+
+
 
 

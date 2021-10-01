@@ -384,48 +384,6 @@ ui <- shiny::tagList(
 
 
 
-#     width = mainPanel_width,
-#     shiny::tabsetPanel(
-#       type = "pills",
-#       shiny::tabPanel(
-#         title = "Panel 1",  DT::dataTableOutput("dataset_2_2")),
-#       shiny::tabPanel(
-#         title = "Panel 2",
-#         shiny::hr(),
-#         shiny::fluidRow(shiny::splitLayout(cellWidths = c("24.5%", "24.5%", "24.5%", "24.5%"),
-#                                            cellArgs = list(style = "padding: 2.5px"),
-#                                            shiny::plotOutput("plot_2_2_1"),
-#                                            shiny::plotOutput("plot_2_2_2"),
-#                                            shiny::plotOutput("plot_2_2_3"),
-#                                            shiny::plotOutput("plot_2_2_4"))),
-#         shiny::hr(),
-#         shiny::fluidRow(shiny::splitLayout(cellWidths = c("24.5%", "24.5%", "24.5%", "24.5%"),
-#                                            cellArgs = list(style = "padding: 2.5px"),
-#                                            shiny::plotOutput("plot_2_2_1"),
-#                                            shiny::plotOutput("plot_2_2_2"),
-#                                            shiny::plotOutput("plot_2_2_3"),
-#                                            shiny::plotOutput("plot_2_2_4"))),
-#         shiny::hr(),
-#         shiny::fluidRow(shiny::splitLayout(cellWidths = c("24.5%", "24.5%", "24.5%", "24.5%"),
-#                                            cellArgs = list(style = "padding: 2.5px"),
-#                                            shiny::plotOutput("plot_2_2_1"),
-#                                            shiny::plotOutput("plot_2_2_2"),
-#                                            shiny::plotOutput("plot_2_2_3"),
-#                                            shiny::plotOutput("plot_2_2_4"))),
-#         shiny::hr(),
-#         shiny::fluidRow(shiny::splitLayout(cellWidths = c("24.5%", "24.5%", "24.5%", "24.5%"),
-#                                            cellArgs = list(style = "padding: 2.5px"),
-#                                            shiny::plotOutput("plot_2_2_1"),
-#                                            shiny::plotOutput("plot_2_2_2"),
-#                                            shiny::plotOutput("plot_2_2_3"),
-#                                            shiny::plotOutput("plot_2_2_4")))),
-#       shiny::tabPanel(
-#         title = "Panel 3")))
-
-
-
-
-
 
 # ---------------------------------------------------------------------------- #
 # Server:
