@@ -106,7 +106,8 @@ factor_count_histogram_plot <- function(data,
                                 fontface = 1,
                                 size = label_size, 
                                 label.padding = ggplot2::unit(label_padding, "lines"),
-                                label.r = ggplot2::unit(0, "lines"))
+                                label.r = ggplot2::unit(0, "lines"),
+                                direction = "y")
   } else {
     plot <- plot +
       ggplot2::geom_label(color = "black", 
@@ -219,7 +220,8 @@ factor_percentage_histogram_plot <- function(data,
                                 fontface = 1,
                                 size = label_size, 
                                 label.padding = ggplot2::unit(label_padding, "lines"),
-                                label.r = ggplot2::unit(0, "lines"))
+                                label.r = ggplot2::unit(0, "lines"),
+                                direction = "y")
   } else {
     plot <- plot +
       ggplot2::geom_label(color = "black", 
@@ -311,7 +313,8 @@ factor_vs_factor_count_plot <- function(data,
                                 fontface = 1,
                                 size = label_size, 
                                 label.padding = ggplot2::unit(label_padding, "lines"),
-                                label.r = ggplot2::unit(0, "lines"))
+                                label.r = ggplot2::unit(0, "lines"),
+                                direction = "y")
   } else {
     plot <- plot +
       ggplot2::geom_label(color = "black", 
@@ -405,7 +408,8 @@ factor_vs_factor_percentage_plot <- function(data,
                                 fontface = 1,
                                 size = label_size, 
                                 label.padding = ggplot2::unit(label_padding, "lines"),
-                                label.r = ggplot2::unit(0, "lines"))
+                                label.r = ggplot2::unit(0, "lines"),
+                                direction = "y")
   } else {
     plot <- plot +
       ggplot2::geom_label(color = "black", 
@@ -502,7 +506,8 @@ factor_vs_factor_percentage_group_tile_plot <- function(data,
                                 fontface = 1,
                                 size = label_size, 
                                 label.padding = ggplot2::unit(label_padding, "lines"),
-                                label.r = ggplot2::unit(0, "lines"))
+                                label.r = ggplot2::unit(0, "lines"),
+                                direction = "y")
   } else {
     plot <- plot +
       ggplot2::geom_label(color = "black", 
@@ -691,7 +696,8 @@ factor_circle_plot <- function(data,
                                 fontface = 1,
                                 size = label_size, 
                                 label.padding = ggplot2::unit(label_padding, "lines"),
-                                label.r = ggplot2::unit(0, "lines"))
+                                label.r = ggplot2::unit(0, "lines"),
+                                direction = "y")
   } else {
     plot <- plot +
       ggplot2::geom_label(data = data_packing,
@@ -930,7 +936,8 @@ factor_vs_factor_parallel_plot <- function(data,
                                 fontface = 1,
                                 size = label_size, 
                                 label.padding = ggplot2::unit(label_padding, "lines"),
-                                label.r = ggplot2::unit(0, "lines"))
+                                label.r = ggplot2::unit(0, "lines"),
+                                direction = "y")
   } else {
     plot <- plot +
       ggplot2::geom_label(data = plot_1_data,
@@ -1132,7 +1139,8 @@ numeric_count_bar_plot <- function(data,
                                 fontface = 1,
                                 size = label_size, 
                                 label.padding = ggplot2::unit(label_padding, "lines"),
-                                label.r = ggplot2::unit(0, "lines"))
+                                label.r = ggplot2::unit(0, "lines"),
+                                direction = "y")
   } else {
     plot <- plot +
       ggplot2::geom_label(color = "black", 
@@ -1221,7 +1229,8 @@ numeric_percentage_bar_plot <- function(data,
                                 fontface = 1,
                                 size = label_size, 
                                 label.padding = ggplot2::unit(label_padding, "lines"),
-                                label.r = ggplot2::unit(0, "lines"))
+                                label.r = ggplot2::unit(0, "lines"),
+                                direction = "y")
   } else {
     plot <- plot +
       ggplot2::geom_label(color = "black", 

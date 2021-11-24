@@ -1,4 +1,5 @@
-
+# ------------------------------------------------------------------------------
+# Libraries:
 library(shiny)
 library(Metrics)
 library(tidyverse)
@@ -7,6 +8,9 @@ library(DT)
 library(readr)
 library(shinydashboard)
 
+# ------------------------------------------------------------------------------
+# Environment:
+setwd(dir = "D:\\GitHub\\Github_ShinyMLModelAnalyst")
 source("Functions.R")
 
 # ------------------------------------------------------------------------------
@@ -19,21 +23,20 @@ mainPanel_width <- 9
 
 # ---------------------------------------------------------------------------- #
 # User Interface:
-
 ui <- shiny::tagList(
   
   shiny::h4(shiny::textOutput("CurrentDateTime")),
   shinythemes::themeSelector(),
   shiny::navbarPage(
-    "DataModelAnalyst - Shiny Application",
+    title = "DataModelAnalyst - Shiny Application",
     # ------------------------------------------------------------------------ #
     shiny::tabPanel(
       title = icon("home")),
     # ------------------------------------------------------------------------ #
     shiny::navbarMenu(
-      "1D - Data Visualisation Tool",
+      title = "1D - Data Visualisation Tool",
       shiny::tabPanel(
-        "Factor",
+        title = "Factor",
         shiny::sidebarLayout(
           position = "left",
           shiny::sidebarPanel(
@@ -108,25 +111,25 @@ ui <- shiny::tagList(
                                                    shiny::plotOutput("plot_1_1_3"),
                                                    shiny::plotOutput("plot_1_1_4"))),
                 shiny::fluidRow(
-                  shiny::column(width = 3, shiny::downloadButton(outputId = "downloadButton_1_1_2_1", label = NULL, icon = shiny::icon("fas fa-download"))),
-                  shiny::column(width = 3, shiny::downloadButton(outputId = "downloadButton_1_1_2_2", label = NULL, icon = shiny::icon("fas fa-download"))),
-                  shiny::column(width = 3, shiny::downloadButton(outputId = "downloadButton_1_1_2_3", label = NULL, icon = shiny::icon("fas fa-download"))),
-                  shiny::column(width = 3, shiny::downloadButton(outputId = "downloadButton_1_1_2_4", label = NULL, icon = shiny::icon("fas fa-download")))),
+                  shiny::column(width = 3, shiny::downloadButton(outputId = "downloadButton_1_1_2_1", label = NULL, icon = shiny::icon(name = "fas fa-download"))),
+                  shiny::column(width = 3, shiny::downloadButton(outputId = "downloadButton_1_1_2_2", label = NULL, icon = shiny::icon(name = "fas fa-download"))),
+                  shiny::column(width = 3, shiny::downloadButton(outputId = "downloadButton_1_1_2_3", label = NULL, icon = shiny::icon(name = "fas fa-download"))),
+                  shiny::column(width = 3, shiny::downloadButton(outputId = "downloadButton_1_1_2_4", label = NULL, icon = shiny::icon(name = "fas fa-download")))),
                 shiny::hr()),
               shiny::tabPanel(
                 title = "Panel 3"))))),
       shiny::tabPanel(
-        "Numeric"),
+        title = "Numeric"),
       shiny::tabPanel(
-        "Date"),
+        title = "Date"),
       shiny::tabPanel(
-        "Datetime")),
+        title = "Datetime")),
     
     # ------------------------------------------------------------------------ #
     shiny::navbarMenu(
-      "2D - Data Visualisation Tool",
+      title = "2D - Data Visualisation Tool",
       shiny::tabPanel(
-        "Factor vs Factor",
+        title = "Factor vs Factor",
         shiny::sidebarLayout(
           position = "left",
           shiny::sidebarPanel(
@@ -377,139 +380,175 @@ ui <- shiny::tagList(
         "Date vs Factor"),
       shiny::tabPanel(
         "Datetime vs Factor")
-      # ------------------------------------------------------------------------ #
+    ),
+    # ------------------------------------------------------------------------ #
+    shiny::navbarMenu(
+      title = "Single Model Evaluation",
+      shiny::tabPanel(
+        "Binary Classification"),
+      shiny::tabPanel(
+        "Multiclass Classification"),
+      shiny::tabPanel(
+        "Multilabel Classification"),
+      shiny::tabPanel(
+        "Regression")
+    ),    
+    # ------------------------------------------------------------------------ #
+    shiny::navbarMenu(
+      title = "Several Model Evaluation",
+      shiny::tabPanel(
+        "Binary Classification"),
+      shiny::tabPanel(
+        "Multiclass Classification"),
+      shiny::tabPanel(
+        "Multilabel Classification"),
+      shiny::tabPanel(
+        "Regression")
+    ),
+    # ------------------------------------------------------------------------ #
+    shiny::navbarMenu(
+      title = "Ensemble Model Optimizer",
+      shiny::tabPanel(
+        "Binary Classification"),
+      shiny::tabPanel(
+        "Multiclass Classification"),
+      shiny::tabPanel(
+        "Multilabel Classification"),
+      shiny::tabPanel(
+        "Regression")
     )
   )
 )
-
-
-
-
-# ---------------------------------------------------------------------------- #
-# Server:
-server = function(input, output, session){
-  
-  output$CurrentDateTime <- shiny::renderText({
-    shiny::invalidateLater(millis = 1000,
-                           session = session)
-    paste(Sys.time())})
-  
-  # -------------------------------------------------------------------------- #
-  # 1.1
-  source("1_1_Dataset.R", local = TRUE)
-  source("1_1_Table.R", local = TRUE)
-  source("1_1_Variables.R", local = TRUE)
-  source("1_1_Plots.R", local = TRUE)
-  source("1_1_Reset.R", local = TRUE)
-  source("1_1_Download.R", local = TRUE)
-  
-  # -------------------------------------------------------------------------- #
-  # 2.1
-  source("2_1_Dataset.R", local = TRUE)
-  source("2_1_Table.R", local = TRUE)
-  source("2_1_Variables.R", local = TRUE)
-  source("2_1_Plots.R", local = TRUE)
-  source("2_1_Reset.R", local = TRUE)
-  source("2_1_Download.R", local = TRUE)
-  
-  # -------------------------------------------------------------------------- #
   
   
   
   
+  # ---------------------------------------------------------------------------- #
+  # Server:
+  server <- function(input, output, session){
+    
+    output$CurrentDateTime <- shiny::renderText({
+      shiny::invalidateLater(millis = 1000,
+                             session = session)
+      paste(Sys.time())})
+    
+    # -------------------------------------------------------------------------- #
+    # 1.1
+    source(file = "1_1_Dataset.R", local = TRUE)
+    source(file = "1_1_Table.R", local = TRUE)
+    source(file = "1_1_Variables.R", local = TRUE)
+    source(file = "1_1_Plots.R", local = TRUE)
+    source(file = "1_1_Reset.R", local = TRUE)
+    source(file = "1_1_Download.R", local = TRUE)
+    
+    # -------------------------------------------------------------------------- #
+    # 2.1
+    source(file = "2_1_Dataset.R", local = TRUE)
+    source(file = "2_1_Table.R", local = TRUE)
+    source(file = "2_1_Variables.R", local = TRUE)
+    source(file = "2_1_Plots.R", local = TRUE)
+    source(file = "2_1_Reset.R", local = TRUE)
+    source(file = "2_1_Download.R", local = TRUE)
+    
+    # -------------------------------------------------------------------------- #
+    
+    
+    
+    
+    
+    # 2.2
+    dataset_2_2 <- shiny::reactive({
+      file_import_2_2 <- input$File_Input_2_2
+      if (is.null(file_import_2_2))
+        return(NULL)
+      readr::read_csv2(file_import_2_2$datapath)})
+    
+    dataset_2_2_ <- shiny::reactive({ 
+      data_sampler(data = dataset_2_2(),
+                   data_fraction = input$sliderInput_2_2_2_1,
+                   set_seed = input$radioButtons_2_2_2_2,
+                   seed_value = input$numericInput_2_2_2_3)})
+    
+    factor_variables_2_2 <- shiny::reactive({
+      character_vars <- dataset_2_2_() %>%
+        dplyr::select_if(is.character) %>%
+        colnames()
+      factor_vars <- dataset_2_2_() %>%
+        dplyr::select_if(is.factor) %>%
+        colnames()
+      select_box_input(vector = c(character_vars, factor_vars))})
+    
+    numeric_variables_2_2 <- shiny::reactive({
+      numeric_vars <- dataset_2_2_() %>%
+        dplyr::select_if(is.numeric) %>%
+        colnames()
+      select_box_input(vector = numeric_vars)})
+    
+    shiny::observeEvent(eventExpr = input$File_Input_2_2, handlerExpr = {shiny::updateSelectInput(session, inputId = "selectInput_2_2_2_4", choices = factor_variables_2_2(), selected = factor_variables_2_2()[[1]])})
+    shiny::observeEvent(eventExpr = input$File_Input_2_2, handlerExpr = {shiny::updateSelectInput(session, inputId = "selectInput_2_2_2_5", choices = numeric_variables_2_2(), selected = numeric_variables_2_2()[[1]])})
+    
+    output$plot_2_2_1 <- shiny::renderPlot({
+      factor_count_histogram_plot(data = dataset_2_2_(),
+                                  factor_var = input$selectInput_2_2_2_4,
+                                  title_size = input$numericInput_2_2_3_2_1,
+                                  repel_label = input$radioButtons_2_2_3_3_4,
+                                  text_size = input$numericInput_2_2_3_2_2,
+                                  label_size = input$numericInput_2_2_3_2_3,
+                                  factor_axis = input$textInput_2_2_3_1_1,
+                                  title = input$textInput_2_2_3_4_1,
+                                  count_axis = input$textInput_2_2_3_1_3,
+                                  caption = input$textInput_2_2_3_1_5)})
+    
+    output$plot_2_2_2 <- shiny::renderPlot({
+      factor_percentage_histogram_plot(data = dataset_2_2_(),
+                                       factor_var = input$selectInput_2_2_2_4,
+                                       title_size = input$numericInput_2_2_3_2_1,
+                                       repel_label = input$radioButtons_2_2_3_3_4,
+                                       text_size = input$numericInput_2_2_3_2_2,
+                                       label_size = input$numericInput_2_2_3_2_3,
+                                       factor_axis = input$textInput_2_2_3_1_1,
+                                       title = input$textInput_2_2_3_4_2,
+                                       percentage_axis = input$textInput_2_2_3_1_4,
+                                       caption = input$textInput_2_2_3_1_5)})
+    
+    output$plot_2_2_3 <- shiny::renderPlot({
+      factor_waffle_plot(data = dataset_2_2_(),
+                         factor_var = input$selectInput_2_2_2_4,
+                         factor_axis = input$textInput_2_2_3_1_1,
+                         title_size = input$numericInput_2_2_3_2_1,
+                         text_size = input$numericInput_2_2_3_2_2,
+                         title = input$textInput_2_2_3_4_3,
+                         grid_size = as.numeric(input$selectInput_2_2_2_2_4),
+                         display_legend = input$radioButtons_2_2_3_3_1,
+                         legend_position = input$radioButtons_2_2_3_3_2,
+                         legend_direction = input$radioButtons_2_2_3_3_3,
+                         caption = input$textInput_2_2_3_1_5)})
+    
+    output$plot_2_2_4 <- shiny::renderPlot({
+      factor_circle_plot(data = dataset_2_2_(),
+                         factor_var = input$selectInput_2_2_2_4,
+                         title_size = input$numericInput_2_2_3_2_1,
+                         text_size = input$numericInput_2_2_3_2_2,
+                         repel_label = input$radioButtons_2_2_3_3_4,
+                         label_size = input$numericInput_2_2_3_2_3,
+                         title = input$textInput_2_2_3_4_4,
+                         caption = input$textInput_2_2_3_1_5)})
+    
+    output$dataset_2_2 <- DT::renderDataTable(
+      expr = dataset_2_2_(),
+      options = list(pageLength = 25,
+                     lengthMenu = list(c(5, 10, 25, 100, 1000, -1),
+                                       c("5", "10", "25", "100", "1000", "All")),
+                     searching = TRUE))
+    
+  }
   
-  # 2.2
-  dataset_2_2 <- shiny::reactive({
-    file_import_2_2 <- input$File_Input_2_2
-    if (is.null(file_import_2_2))
-      return(NULL)
-    readr::read_csv2(file_import_2_2$datapath)})
   
-  dataset_2_2_ <- shiny::reactive({ 
-    data_sampler(data = dataset_2_2(),
-                 data_fraction = input$sliderInput_2_2_2_1,
-                 set_seed = input$radioButtons_2_2_2_2,
-                 seed_value = input$numericInput_2_2_2_3)})
   
-  factor_variables_2_2 <- shiny::reactive({
-    character_vars <- dataset_2_2_() %>%
-      dplyr::select_if(is.character) %>%
-      colnames()
-    factor_vars <- dataset_2_2_() %>%
-      dplyr::select_if(is.factor) %>%
-      colnames()
-    select_box_input(vector = c(character_vars, factor_vars))})
   
-  numeric_variables_2_2 <- shiny::reactive({
-    numeric_vars <- dataset_2_2_() %>%
-      dplyr::select_if(is.numeric) %>%
-      colnames()
-    select_box_input(vector = numeric_vars)})
   
-  shiny::observeEvent(eventExpr = input$File_Input_2_2, handlerExpr = {shiny::updateSelectInput(session, inputId = "selectInput_2_2_2_4", choices = factor_variables_2_2(), selected = factor_variables_2_2()[[1]])})
-  shiny::observeEvent(eventExpr = input$File_Input_2_2, handlerExpr = {shiny::updateSelectInput(session, inputId = "selectInput_2_2_2_5", choices = numeric_variables_2_2(), selected = numeric_variables_2_2()[[1]])})
+  # ---------------------------------------------------------------------------- #
+  # Application:
+  shiny::shinyApp(ui = ui, server = server)
   
-  output$plot_2_2_1 <- shiny::renderPlot({
-    factor_count_histogram_plot(data = dataset_2_2_(),
-                                factor_var = input$selectInput_2_2_2_4,
-                                title_size = input$numericInput_2_2_3_2_1,
-                                repel_label = input$radioButtons_2_2_3_3_4,
-                                text_size = input$numericInput_2_2_3_2_2,
-                                label_size = input$numericInput_2_2_3_2_3,
-                                factor_axis = input$textInput_2_2_3_1_1,
-                                title = input$textInput_2_2_3_4_1,
-                                count_axis = input$textInput_2_2_3_1_3,
-                                caption = input$textInput_2_2_3_1_5)})
   
-  output$plot_2_2_2 <- shiny::renderPlot({
-    factor_percentage_histogram_plot(data = dataset_2_2_(),
-                                     factor_var = input$selectInput_2_2_2_4,
-                                     title_size = input$numericInput_2_2_3_2_1,
-                                     repel_label = input$radioButtons_2_2_3_3_4,
-                                     text_size = input$numericInput_2_2_3_2_2,
-                                     label_size = input$numericInput_2_2_3_2_3,
-                                     factor_axis = input$textInput_2_2_3_1_1,
-                                     title = input$textInput_2_2_3_4_2,
-                                     percentage_axis = input$textInput_2_2_3_1_4,
-                                     caption = input$textInput_2_2_3_1_5)})
-  
-  output$plot_2_2_3 <- shiny::renderPlot({
-    factor_waffle_plot(data = dataset_2_2_(),
-                       factor_var = input$selectInput_2_2_2_4,
-                       factor_axis = input$textInput_2_2_3_1_1,
-                       title_size = input$numericInput_2_2_3_2_1,
-                       text_size = input$numericInput_2_2_3_2_2,
-                       title = input$textInput_2_2_3_4_3,
-                       grid_size = as.numeric(input$selectInput_2_2_2_2_4),
-                       display_legend = input$radioButtons_2_2_3_3_1,
-                       legend_position = input$radioButtons_2_2_3_3_2,
-                       legend_direction = input$radioButtons_2_2_3_3_3,
-                       caption = input$textInput_2_2_3_1_5)})
-  
-  output$plot_2_2_4 <- shiny::renderPlot({
-    factor_circle_plot(data = dataset_2_2_(),
-                       factor_var = input$selectInput_2_2_2_4,
-                       title_size = input$numericInput_2_2_3_2_1,
-                       text_size = input$numericInput_2_2_3_2_2,
-                       repel_label = input$radioButtons_2_2_3_3_4,
-                       label_size = input$numericInput_2_2_3_2_3,
-                       title = input$textInput_2_2_3_4_4,
-                       caption = input$textInput_2_2_3_1_5)})
-  
-  output$dataset_2_2 <- DT::renderDataTable(
-    expr = dataset_2_2_(),
-    options = list(pageLength = 25,
-                   lengthMenu = list(c(5, 10, 25, 100, 1000, -1),
-                                     c("5", "10", "25", "100", "1000", "All")),
-                   searching = TRUE))
-  
-}
-
-
-
-
-
-# ---------------------------------------------------------------------------- #
-# Application:
-shiny::shinyApp(ui = ui, server = server)
-
